@@ -1,0 +1,26 @@
+{
+  "appName": "AutoParts.az",
+  "tagline": "Avtomobil ehtiyat hissələri marketpleysi",
+  "hero": {
+    "title": "Maşınınız üçün ehtiyat hissəsi tapın",
+    "subtitle": "Ad, OEM nömrəsi və ya avtomobil markası ilə axtarın"
+  },
+  "nav": {
+    "search": "Axtarış",
+    "categories": "Kateqoriyalar",
+    "byCar": "Maşına görə",
+    "cart": "Səbət",
+    "login": "Daxil ol"
+  },
+  "actions": {
+    "pingApi": "API yoxla"
+  },
+  "footer": {
+    "rights": "Bütün hüquqlar qorunur."
+  },
+  "language": {
+    "az": "Azərbaycanca",
+    "ru": "Rusca",
+    "en": "İngiliscə"
+  }
+}

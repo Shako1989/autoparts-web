@@ -1,0 +1,26 @@
+{
+  "appName": "AutoParts.az",
+  "tagline": "Auto parts marketplace for Azerbaijan",
+  "hero": {
+    "title": "Find the right part for your car",
+    "subtitle": "Search by name, OEM number, or car make"
+  },
+  "nav": {
+    "search": "Search",
+    "categories": "Categories",
+    "byCar": "By car",
+    "cart": "Cart",
+    "login": "Sign in"
+  },
+  "actions": {
+    "pingApi": "Ping API"
+  },
+  "footer": {
+    "rights": "All rights reserved."
+  },
+  "language": {
+    "az": "Azerbaijani",
+    "ru": "Russian",
+    "en": "English"
+  }
+}
