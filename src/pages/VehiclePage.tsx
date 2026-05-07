@@ -4,6 +4,7 @@ import { Link, useParams } from 'react-router-dom';
 import { Car } from 'lucide-react';
 
 import { useCategoryTree, useMakes, useModels } from '@/api/catalog';
+import { CategoryIcon } from '@/components/catalog/CategoryIcon';
 
 export default function VehiclePage(): ReactElement {
   const { t } = useTranslation();
@@ -52,14 +53,21 @@ export default function VehiclePage(): ReactElement {
                 <li key={c.id}>
                   <Link
                     to={`/c/${c.slug}`}
-                    className="block rounded-md border border-slate-200 bg-white p-3 hover:border-slate-400"
+                    className="flex items-start gap-3 rounded-md border border-slate-200 bg-white p-3 hover:border-slate-400"
                   >
-                    <span className="font-medium">{c.name}</span>
-                    {c.children.length > 0 && (
-                      <span className="block text-xs text-slate-500 mt-1">
-                        {c.children.length} →
-                      </span>
-                    )}
+                    <CategoryIcon
+                      slug={c.slug}
+                      className="h-5 w-5 mt-0.5 flex-none text-slate-500"
+                      aria-hidden
+                    />
+                    <div>
+                      <span className="font-medium">{c.name}</span>
+                      {c.children.length > 0 && (
+                        <span className="block text-xs text-slate-500 mt-1">
+                          {c.children.length} →
+                        </span>
+                      )}
+                    </div>
                   </Link>
                 </li>
               ))}

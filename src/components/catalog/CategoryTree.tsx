@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router-dom';
 
 import { useCategoryTree, type CategoryNode } from '@/api/catalog';
-import { ChevronRight } from 'lucide-react';
+import { CategoryIcon } from './CategoryIcon';
 
 export function CategoryTree(): ReactElement {
   const { t } = useTranslation();
@@ -25,18 +25,17 @@ export function CategoryTree(): ReactElement {
 }
 
 function CategoryItem({ node, depth }: { node: CategoryNode; depth: number }): ReactElement {
-  const hasChildren = node.children.length > 0;
   return (
     <li>
       <Link
         to={`/c/${node.slug}`}
-        className="flex items-center gap-1 rounded px-2 py-1 text-sm text-slate-700 hover:bg-slate-100"
+        className="flex items-center gap-2 rounded px-2 py-1 text-sm text-slate-700 hover:bg-slate-100"
         style={{ paddingLeft: `${0.5 + depth * 0.75}rem` }}
       >
-        {hasChildren ? <ChevronRight className="h-3 w-3 text-slate-400" aria-hidden /> : <span className="w-3" />}
+        <CategoryIcon slug={node.slug} className="h-4 w-4 text-slate-500" aria-hidden />
         <span>{node.name}</span>
       </Link>
-      {hasChildren && (
+      {node.children.length > 0 && (
         <ul className="space-y-0.5">
           {node.children.map((child) => (
             <CategoryItem key={child.id} node={child} depth={depth + 1} />

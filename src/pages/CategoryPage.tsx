@@ -1,9 +1,10 @@
 import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
-import { ChevronRight, Package } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 import { useCategory, usePartsInCategory, type PartListItem } from '@/api/catalog';
+import { CategoryIcon } from '@/components/catalog/CategoryIcon';
 
 export default function CategoryPage(): ReactElement {
   const { t } = useTranslation();
@@ -17,7 +18,10 @@ export default function CategoryPage(): ReactElement {
   return (
     <Page>
       <Breadcrumbs trail={data.breadcrumbs} />
-      <h1 className="text-3xl font-semibold mt-2">{data.name}</h1>
+      <div className="mt-2 flex items-center gap-3">
+        <CategoryIcon slug={data.slug} className="h-7 w-7 text-slate-700" aria-hidden />
+        <h1 className="text-3xl font-semibold">{data.name}</h1>
+      </div>
 
       {data.children.length > 0 && (
         <section className="mt-8">
@@ -27,8 +31,9 @@ export default function CategoryPage(): ReactElement {
               <li key={c.id}>
                 <Link
                   to={`/c/${c.slug}`}
-                  className="block rounded-md border border-slate-200 bg-white p-3 hover:border-slate-400"
+                  className="flex items-center gap-3 rounded-md border border-slate-200 bg-white p-3 hover:border-slate-400"
                 >
+                  <CategoryIcon slug={c.slug} className="h-5 w-5 text-slate-500" aria-hidden />
                   <span className="font-medium">{c.name}</span>
                 </Link>
               </li>
@@ -57,7 +62,7 @@ export default function CategoryPage(): ReactElement {
           <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
             {partsQ.data.items.map((p) => (
               <li key={p.id}>
-                <PartCard part={p} />
+                <PartCard part={p} categorySlug={data.slug} />
               </li>
             ))}
           </ul>
@@ -67,17 +72,17 @@ export default function CategoryPage(): ReactElement {
   );
 }
 
-function PartCard({ part }: { part: PartListItem }): ReactElement {
+function PartCard({ part, categorySlug }: { part: PartListItem; categorySlug: string }): ReactElement {
   return (
     <Link
       to={`/p/${part.id}`}
       className="flex items-start gap-3 rounded-md border border-slate-200 bg-white p-3 hover:border-slate-400"
     >
-      <div className="flex h-12 w-12 flex-none items-center justify-center rounded bg-slate-100 text-slate-400">
+      <div className="flex h-12 w-12 flex-none items-center justify-center rounded bg-slate-100 text-slate-500">
         {part.defaultImageUrl ? (
           <img src={part.defaultImageUrl} alt="" className="h-full w-full rounded object-cover" />
         ) : (
-          <Package className="h-5 w-5" aria-hidden />
+          <CategoryIcon slug={categorySlug} className="h-5 w-5" aria-hidden />
         )}
       </div>
       <div className="min-w-0">
