@@ -1,14 +1,15 @@
 import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, Package } from 'lucide-react';
 
-import { useCategory } from '@/api/catalog';
+import { useCategory, usePartsInCategory, type PartListItem } from '@/api/catalog';
 
 export default function CategoryPage(): ReactElement {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { data, isLoading, isError } = useCategory(slug);
+  const partsQ = usePartsInCategory(slug);
 
   if (isLoading) return <Page>{t('catalog.loading')}</Page>;
   if (isError || !data) return <Page>{t('catalog.empty')}</Page>;
@@ -37,12 +38,53 @@ export default function CategoryPage(): ReactElement {
       )}
 
       <section className="mt-10">
-        <h2 className="text-lg font-semibold mb-3">{t('catalog.category.partsHeading')}</h2>
-        <p className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
-          {t('catalog.category.partsPlaceholder')}
-        </p>
+        <h2 className="text-lg font-semibold mb-3">
+          {t('catalog.category.partsHeading')}
+          {partsQ.data && (
+            <span className="ml-2 text-sm font-normal text-slate-500">({partsQ.data.total})</span>
+          )}
+        </h2>
+
+        {partsQ.isLoading && <p className="text-sm text-slate-500">{t('catalog.loading')}</p>}
+
+        {partsQ.data && partsQ.data.items.length === 0 && (
+          <p className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
+            {t('catalog.category.partsPlaceholder')}
+          </p>
+        )}
+
+        {partsQ.data && partsQ.data.items.length > 0 && (
+          <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+            {partsQ.data.items.map((p) => (
+              <li key={p.id}>
+                <PartCard part={p} />
+              </li>
+            ))}
+          </ul>
+        )}
       </section>
     </Page>
+  );
+}
+
+function PartCard({ part }: { part: PartListItem }): ReactElement {
+  return (
+    <Link
+      to={`/p/${part.id}`}
+      className="flex items-start gap-3 rounded-md border border-slate-200 bg-white p-3 hover:border-slate-400"
+    >
+      <div className="flex h-12 w-12 flex-none items-center justify-center rounded bg-slate-100 text-slate-400">
+        {part.defaultImageUrl ? (
+          <img src={part.defaultImageUrl} alt="" className="h-full w-full rounded object-cover" />
+        ) : (
+          <Package className="h-5 w-5" aria-hidden />
+        )}
+      </div>
+      <div className="min-w-0">
+        <div className="font-medium text-slate-900 truncate">{part.name}</div>
+        {part.brand && <div className="text-xs text-slate-500">{part.brand}</div>}
+      </div>
+    </Link>
   );
 }
 

@@ -61,6 +61,20 @@ export interface PartNumberEntry {
   source: string | null;
 }
 
+export interface PartListItem {
+  id: string;
+  name: string;
+  brand: string | null;
+  defaultImageUrl: string | null;
+}
+
+export interface PageResponse<T> {
+  items: T[];
+  page: number;
+  size: number;
+  total: number;
+}
+
 export interface PartDetail {
   id: string;
   categoryId: string;
@@ -94,6 +108,8 @@ const KEY = {
   variants: (modelId: string, year: number) => ['catalog', 'variants', modelId, year] as const,
   tree: (lang: string) => ['catalog', 'tree', lang] as const,
   category: (slug: string, lang: string) => ['catalog', 'category', slug, lang] as const,
+  partsInCategory: (slug: string, page: number, size: number, lang: string) =>
+    ['catalog', 'category', slug, 'parts', page, size, lang] as const,
   part: (id: string, lang: string) => ['catalog', 'part', id, lang] as const,
   fitments: (partId: string) => ['catalog', 'fitments', partId] as const,
 };
@@ -159,6 +175,22 @@ export function useCategory(slug: string | undefined): ReturnType<typeof useQuer
   return useQuery({
     queryKey: KEY.category(slug ?? '', lang),
     queryFn: () => get<CategoryDetail>(`/v1/catalog/categories/${slug}`),
+    enabled: !!slug,
+    ...longStale,
+  });
+}
+
+export function usePartsInCategory(
+  slug: string | undefined,
+  page = 0,
+  size = 20,
+): ReturnType<typeof useQuery<PageResponse<PartListItem>>> {
+  const { i18n } = useTranslation();
+  const lang = i18n.resolvedLanguage ?? 'az';
+  return useQuery({
+    queryKey: KEY.partsInCategory(slug ?? '', page, size, lang),
+    queryFn: () =>
+      get<PageResponse<PartListItem>>(`/v1/catalog/categories/${slug}/parts?page=${page}&size=${size}`),
     enabled: !!slug,
     ...longStale,
   });
