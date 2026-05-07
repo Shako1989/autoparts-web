@@ -6,6 +6,8 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 
 const HomePage = lazy(() => import('@/pages/HomePage'));
+const CategoryPage = lazy(() => import('@/pages/CategoryPage'));
+const VehiclePage = lazy(() => import('@/pages/VehiclePage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -31,7 +33,11 @@ function RootLayout(): ReactElement {
 const router = createBrowserRouter([
   {
     element: <RootLayout />,
-    children: [{ index: true, element: <HomePage /> }],
+    children: [
+      { index: true, element: <HomePage /> },
+      { path: 'c/:slug', element: <CategoryPage /> },
+      { path: 'v/:makeSlug/:modelSlug/:year', element: <VehiclePage /> },
+    ],
   },
 ]);
 

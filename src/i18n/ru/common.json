@@ -13,7 +13,8 @@
     "login": "Войти"
   },
   "actions": {
-    "pingApi": "Проверить API"
+    "pingApi": "Проверить API",
+    "browse": "Открыть"
   },
   "footer": {
     "rights": "Все права защищены."
@@ -22,5 +23,29 @@
     "az": "Азербайджанский",
     "ru": "Русский",
     "en": "Английский"
+  },
+  "catalog": {
+    "popularMakes": "Популярные марки",
+    "categories": "Категории",
+    "vehiclePicker": {
+      "title": "Найти по автомобилю",
+      "selectMake": "Марка",
+      "selectModel": "Модель",
+      "selectYear": "Год",
+      "find": "Найти"
+    },
+    "category": {
+      "subcategories": "Подкатегории",
+      "partsHeading": "Запчасти в этой категории",
+      "partsPlaceholder": "Список запчастей появится здесь."
+    },
+    "vehicle": {
+      "heading": "{{make}} {{model}} {{year}}",
+      "browseCategories": "Смотреть категории",
+      "partsHeading": "Запчасти для этого автомобиля",
+      "partsPlaceholder": "Запчасти появятся после подключения поиска."
+    },
+    "loading": "Загрузка…",
+    "empty": "Ничего не найдено."
   }
 }

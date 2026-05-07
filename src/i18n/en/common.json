@@ -13,7 +13,8 @@
     "login": "Sign in"
   },
   "actions": {
-    "pingApi": "Ping API"
+    "pingApi": "Ping API",
+    "browse": "Browse"
   },
   "footer": {
     "rights": "All rights reserved."
@@ -22,5 +23,29 @@
     "az": "Azerbaijani",
     "ru": "Russian",
     "en": "English"
+  },
+  "catalog": {
+    "popularMakes": "Popular makes",
+    "categories": "Categories",
+    "vehiclePicker": {
+      "title": "Find by car",
+      "selectMake": "Make",
+      "selectModel": "Model",
+      "selectYear": "Year",
+      "find": "Find"
+    },
+    "category": {
+      "subcategories": "Subcategories",
+      "partsHeading": "Parts in this category",
+      "partsPlaceholder": "Parts listings will appear here."
+    },
+    "vehicle": {
+      "heading": "{{make}} {{model}} {{year}}",
+      "browseCategories": "Browse categories",
+      "partsHeading": "Parts that fit this car",
+      "partsPlaceholder": "Parts will appear once search is wired up."
+    },
+    "loading": "Loading…",
+    "empty": "Nothing found."
   }
 }

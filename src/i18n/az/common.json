@@ -13,7 +13,8 @@
     "login": "Daxil ol"
   },
   "actions": {
-    "pingApi": "API yoxla"
+    "pingApi": "API yoxla",
+    "browse": "Bax"
   },
   "footer": {
     "rights": "Bütün hüquqlar qorunur."
@@ -22,5 +23,29 @@
     "az": "Azərbaycanca",
     "ru": "Rusca",
     "en": "İngiliscə"
+  },
+  "catalog": {
+    "popularMakes": "Populyar markalar",
+    "categories": "Kateqoriyalar",
+    "vehiclePicker": {
+      "title": "Maşına görə tapın",
+      "selectMake": "Marka seçin",
+      "selectModel": "Model seçin",
+      "selectYear": "İl seçin",
+      "find": "Tap"
+    },
+    "category": {
+      "subcategories": "Alt kateqoriyalar",
+      "partsHeading": "Bu kateqoriyada hissələr",
+      "partsPlaceholder": "Hissələrin siyahısı tezliklə görünəcək."
+    },
+    "vehicle": {
+      "heading": "{{make}} {{model}} {{year}}",
+      "browseCategories": "Kateqoriyalara bax",
+      "partsHeading": "Bu maşına uyğun hissələr",
+      "partsPlaceholder": "Hissələr axtarış işə salındıqdan sonra göründə olacaq."
+    },
+    "loading": "Yüklənir…",
+    "empty": "Heç nə tapılmadı."
   }
 }
