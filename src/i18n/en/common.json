@@ -45,6 +45,13 @@
       "partsHeading": "Parts that fit this car",
       "partsPlaceholder": "Parts will appear once search is wired up."
     },
+    "diagram": {
+      "helper": "Click a numbered marker to see the part and its OEM/aftermarket numbers.",
+      "partsList": "Parts in this diagram",
+      "oem": "OEM",
+      "aftermarket": "Aftermarket",
+      "noNumbers": "No part numbers recorded yet."
+    },
     "loading": "Loading…",
     "empty": "Nothing found."
   }

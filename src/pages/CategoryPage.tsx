@@ -3,14 +3,21 @@ import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
-import { useCategory, usePartsInCategory, type PartListItem } from '@/api/catalog';
+import {
+  useCategory,
+  useCategoryDiagrams,
+  usePartsInCategory,
+  type PartListItem,
+} from '@/api/catalog';
 import { CategoryIcon } from '@/components/catalog/CategoryIcon';
+import { DiagramBlock } from '@/components/catalog/DiagramBlock';
 
 export default function CategoryPage(): ReactElement {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { data, isLoading, isError } = useCategory(slug);
   const partsQ = usePartsInCategory(slug);
+  const diagramsQ = useCategoryDiagrams(slug);
 
   if (isLoading) return <Page>{t('catalog.loading')}</Page>;
   if (isError || !data) return <Page>{t('catalog.empty')}</Page>;
@@ -39,6 +46,17 @@ export default function CategoryPage(): ReactElement {
               </li>
             ))}
           </ul>
+        </section>
+      )}
+
+      {diagramsQ.data && diagramsQ.data.length > 0 && (
+        <section className="mt-10 space-y-8">
+          {diagramsQ.data.map((d) => (
+            <article key={d.id}>
+              <h2 className="text-lg font-semibold mb-3">{d.title}</h2>
+              <DiagramBlock diagram={d} />
+            </article>
+          ))}
         </section>
       )}
 

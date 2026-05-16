@@ -8,6 +8,7 @@ import { Footer } from '@/components/layout/Footer';
 const HomePage = lazy(() => import('@/pages/HomePage'));
 const CategoryPage = lazy(() => import('@/pages/CategoryPage'));
 const VehiclePage = lazy(() => import('@/pages/VehiclePage'));
+const DiagramPage = lazy(() => import('@/pages/DiagramPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -37,6 +38,7 @@ const router = createBrowserRouter([
       { index: true, element: <HomePage /> },
       { path: 'c/:slug', element: <CategoryPage /> },
       { path: 'v/:makeSlug/:modelSlug/:year', element: <VehiclePage /> },
+      { path: 'd/:slug', element: <DiagramPage /> },
     ],
   },
 ]);

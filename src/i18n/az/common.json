@@ -45,6 +45,13 @@
       "partsHeading": "Bu maşına uyğun hissələr",
       "partsPlaceholder": "Hissələr axtarış işə salındıqdan sonra göründə olacaq."
     },
+    "diagram": {
+      "helper": "Hissəni və onun OEM/əvəzedici nömrələrini görmək üçün nömrəli işarəyə klikləyin.",
+      "partsList": "Bu sxemdəki hissələr",
+      "oem": "OEM",
+      "aftermarket": "Əvəzedici",
+      "noNumbers": "Hələ heç bir hissə nömrəsi əlavə edilməyib."
+    },
     "loading": "Yüklənir…",
     "empty": "Heç nə tapılmadı."
   }

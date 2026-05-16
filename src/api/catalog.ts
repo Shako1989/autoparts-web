@@ -99,6 +99,39 @@ export interface FitmentEntry {
   notes: string | null;
 }
 
+export interface DiagramCalloutPart {
+  id: string;
+  categorySlug: string;
+  name: string;
+  brand: string | null;
+  defaultImageUrl: string | null;
+  partNumbers: PartNumberEntry[];
+}
+
+export interface DiagramCallout {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  w: number | null;
+  h: number | null;
+  zOrder: number;
+  notes: string | null;
+  part: DiagramCalloutPart;
+}
+
+export interface Diagram {
+  id: string;
+  slug: string;
+  title: string;
+  imageUrl: string;
+  imageWidth: number;
+  imageHeight: number;
+  categoryId: string | null;
+  vehicleVariantId: string | null;
+  callouts: DiagramCallout[];
+}
+
 // ---------- query keys ----------
 
 const KEY = {
@@ -112,6 +145,9 @@ const KEY = {
     ['catalog', 'category', slug, 'parts', page, size, lang] as const,
   part: (id: string, lang: string) => ['catalog', 'part', id, lang] as const,
   fitments: (partId: string) => ['catalog', 'fitments', partId] as const,
+  diagram: (slug: string, lang: string) => ['catalog', 'diagram', slug, lang] as const,
+  categoryDiagrams: (slug: string, lang: string) =>
+    ['catalog', 'category', slug, 'diagrams', lang] as const,
 };
 
 // ---------- raw fetchers ----------
@@ -216,6 +252,30 @@ export function usePartFitments(partId: string | undefined): ReturnType<typeof u
     queryKey: KEY.fitments(partId ?? ''),
     queryFn: () => get<FitmentEntry[]>(`/v1/catalog/parts/${partId}/fitments`),
     enabled: !!partId,
+    ...longStale,
+  });
+}
+
+export function useDiagram(slug: string | undefined): ReturnType<typeof useQuery<Diagram>> {
+  const { i18n } = useTranslation();
+  const lang = i18n.resolvedLanguage ?? 'az';
+  return useQuery({
+    queryKey: KEY.diagram(slug ?? '', lang),
+    queryFn: () => get<Diagram>(`/v1/catalog/diagrams/${slug}`),
+    enabled: !!slug,
+    ...longStale,
+  });
+}
+
+export function useCategoryDiagrams(
+  slug: string | undefined,
+): ReturnType<typeof useQuery<Diagram[]>> {
+  const { i18n } = useTranslation();
+  const lang = i18n.resolvedLanguage ?? 'az';
+  return useQuery({
+    queryKey: KEY.categoryDiagrams(slug ?? '', lang),
+    queryFn: () => get<Diagram[]>(`/v1/catalog/categories/${slug}/diagrams`),
+    enabled: !!slug,
     ...longStale,
   });
 }
