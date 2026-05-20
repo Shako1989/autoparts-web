@@ -4,11 +4,20 @@ import { createBrowserRouter, RouterProvider, Outlet } from 'react-router-dom';
 
 import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
+import { RequireAuth } from '@/components/auth/RequireAuth';
+import { RequireSeller } from '@/components/auth/RequireSeller';
 
 const HomePage = lazy(() => import('@/pages/HomePage'));
 const CategoryPage = lazy(() => import('@/pages/CategoryPage'));
 const VehiclePage = lazy(() => import('@/pages/VehiclePage'));
 const DiagramPage = lazy(() => import('@/pages/DiagramPage'));
+const PartPage = lazy(() => import('@/pages/PartPage'));
+const ListingPage = lazy(() => import('@/pages/ListingPage'));
+const SearchPage = lazy(() => import('@/pages/SearchPage'));
+const LoginPage = lazy(() => import('@/pages/LoginPage'));
+const SellerOnboardingPage = lazy(() => import('@/pages/SellerOnboardingPage'));
+const SellerDashboardPage = lazy(() => import('@/pages/SellerDashboardPage'));
+const ListingEditorPage = lazy(() => import('@/pages/ListingEditorPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -39,6 +48,42 @@ const router = createBrowserRouter([
       { path: 'c/:slug', element: <CategoryPage /> },
       { path: 'v/:makeSlug/:modelSlug/:year', element: <VehiclePage /> },
       { path: 'd/:slug', element: <DiagramPage /> },
+      { path: 'p/:partId', element: <PartPage /> },
+      { path: 'listings/:listingId', element: <ListingPage /> },
+      { path: 'search', element: <SearchPage /> },
+      { path: 'login', element: <LoginPage /> },
+      {
+        path: 'sell/onboarding',
+        element: (
+          <RequireAuth>
+            <SellerOnboardingPage />
+          </RequireAuth>
+        ),
+      },
+      {
+        path: 'sell',
+        element: (
+          <RequireSeller>
+            <SellerDashboardPage />
+          </RequireSeller>
+        ),
+      },
+      {
+        path: 'sell/listings/new',
+        element: (
+          <RequireSeller>
+            <ListingEditorPage mode="create" />
+          </RequireSeller>
+        ),
+      },
+      {
+        path: 'sell/listings/:listingId',
+        element: (
+          <RequireSeller>
+            <ListingEditorPage mode="edit" />
+          </RequireSeller>
+        ),
+      },
     ],
   },
 ]);

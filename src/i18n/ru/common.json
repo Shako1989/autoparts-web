@@ -10,11 +10,16 @@
     "categories": "Категории",
     "byCar": "По автомобилю",
     "cart": "Корзина",
-    "login": "Войти"
+    "login": "Войти",
+    "signOut": "Выйти",
+    "mySellerPanel": "Мои объявления",
+    "becomeSeller": "Стать продавцом"
   },
   "actions": {
     "pingApi": "Проверить API",
-    "browse": "Открыть"
+    "browse": "Открыть",
+    "change": "Изменить",
+    "remove": "Удалить"
   },
   "footer": {
     "rights": "Все права защищены."
@@ -54,5 +59,83 @@
     },
     "loading": "Загрузка…",
     "empty": "Ничего не найдено."
+  },
+  "auth": {
+    "signIn": "Войти",
+    "helper": "Введите номер телефона — мы вышлем одноразовый код.",
+    "phone": "Телефон",
+    "fullName": "Имя",
+    "optional": "необязательно",
+    "requestCode": "Отправить код",
+    "code": "Код",
+    "codeSent": "Код отправлен на {{phone}}",
+    "verify": "Продолжить",
+    "changePhone": "Изменить номер",
+    "devFetchOtp": "Получить dev-код"
+  },
+  "seller": {
+    "onboardingTitle": "Стать продавцом",
+    "onboardingHelper": "Расскажите покупателям, кто вы.",
+    "displayName": "Отображаемое имя",
+    "legalName": "Юридическое название",
+    "city": "Город",
+    "contactPhone": "Контактный телефон",
+    "whatsapp": "Номер WhatsApp",
+    "bio": "О себе",
+    "submit": "Создать профиль продавца",
+    "alreadyTitle": "Вы уже продавец",
+    "alreadyHelper": "Перейдите в кабинет, чтобы управлять объявлениями.",
+    "dashboardCta": "Открыть кабинет",
+    "dashboardTitle": "Мои объявления",
+    "newListing": "Новое объявление",
+    "noListings": "Объявлений пока нет — создайте первое.",
+    "partPickerPlaceholder": "Найти деталь по названию или номеру"
+  },
+  "listing": {
+    "createTitle": "Новое объявление",
+    "editTitle": "Редактировать объявление",
+    "part": "Деталь",
+    "titleField": "Заголовок",
+    "description": "Описание",
+    "condition": "Состояние",
+    "quantity": "Количество",
+    "price": "Цена",
+    "city": "Город",
+    "statusField": "Статус",
+    "save": "Сохранить",
+    "create": "Опубликовать",
+    "addPhoto": "Добавить фото",
+    "photos": "Фотографии",
+    "photosAfterCreate": "Фотографии можно добавить после создания объявления.",
+    "partRequired": "Сначала выберите деталь",
+    "priceInvalid": "Введите корректную цену",
+    "noPhoto": "Нет фото",
+    "partInfo": "Деталь",
+    "seller": "Продавец",
+    "callSeller": "Позвонить",
+    "whatsapp": "WhatsApp",
+    "quantityAvailable": "{{count}} в наличии",
+    "condition.NEW": "Новая",
+    "condition.USED": "Б/у",
+    "condition.REFURBISHED": "Восстановлена",
+    "status.DRAFT": "Черновик",
+    "status.ACTIVE": "Активно",
+    "status.PAUSED": "Приостановлено",
+    "status.SOLD": "Продано",
+    "status.ARCHIVED": "Архив"
+  },
+  "part": {
+    "fitments": "Подходит к этим автомобилям",
+    "offersHeading": "Предложения",
+    "noOffersYet": "Предложений пока нет",
+    "offersSummary": "{{count}} предложений от {{price}}",
+    "viewOffers": "Смотреть предложения"
+  },
+  "search": {
+    "title": "Поиск",
+    "helper": "Введите название детали, OEM-номер или бренд.",
+    "placeholder": "напр.: тормозные колодки, 34116855152",
+    "headerPlaceholder": "Найти деталь или OEM-номер",
+    "empty": "Ничего не найдено. Попробуйте другой запрос или номер детали."
   }
 }

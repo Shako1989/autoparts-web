@@ -10,11 +10,16 @@
     "categories": "Categories",
     "byCar": "By car",
     "cart": "Cart",
-    "login": "Sign in"
+    "login": "Sign in",
+    "signOut": "Sign out",
+    "mySellerPanel": "My listings",
+    "becomeSeller": "Become a seller"
   },
   "actions": {
     "pingApi": "Ping API",
-    "browse": "Browse"
+    "browse": "Browse",
+    "change": "Change",
+    "remove": "Remove"
   },
   "footer": {
     "rights": "All rights reserved."
@@ -54,5 +59,83 @@
     },
     "loading": "Loading…",
     "empty": "Nothing found."
+  },
+  "auth": {
+    "signIn": "Sign in",
+    "helper": "Enter your phone — we'll send a one-time code.",
+    "phone": "Phone",
+    "fullName": "Full name",
+    "optional": "optional",
+    "requestCode": "Send code",
+    "code": "Code",
+    "codeSent": "Code sent to {{phone}}",
+    "verify": "Continue",
+    "changePhone": "Change phone",
+    "devFetchOtp": "Fetch dev code"
+  },
+  "seller": {
+    "onboardingTitle": "Become a seller",
+    "onboardingHelper": "Tell buyers who they're dealing with.",
+    "displayName": "Display name",
+    "legalName": "Legal name",
+    "city": "City",
+    "contactPhone": "Contact phone",
+    "whatsapp": "WhatsApp number",
+    "bio": "About",
+    "submit": "Create seller profile",
+    "alreadyTitle": "You're already a seller",
+    "alreadyHelper": "Go to your dashboard to manage listings.",
+    "dashboardCta": "Open dashboard",
+    "dashboardTitle": "My listings",
+    "newListing": "New listing",
+    "noListings": "No listings yet — create your first one.",
+    "partPickerPlaceholder": "Search a part by name or number"
+  },
+  "listing": {
+    "createTitle": "New listing",
+    "editTitle": "Edit listing",
+    "part": "Part",
+    "titleField": "Title",
+    "description": "Description",
+    "condition": "Condition",
+    "quantity": "Quantity",
+    "price": "Price",
+    "city": "City",
+    "statusField": "Status",
+    "save": "Save changes",
+    "create": "Publish listing",
+    "addPhoto": "Add photo",
+    "photos": "Photos",
+    "photosAfterCreate": "Photos can be added after the listing is created.",
+    "partRequired": "Pick a part first",
+    "priceInvalid": "Enter a valid price",
+    "noPhoto": "No photo",
+    "partInfo": "Part",
+    "seller": "Seller",
+    "callSeller": "Call seller",
+    "whatsapp": "WhatsApp",
+    "quantityAvailable": "{{count}} in stock",
+    "condition.NEW": "New",
+    "condition.USED": "Used",
+    "condition.REFURBISHED": "Refurbished",
+    "status.DRAFT": "Draft",
+    "status.ACTIVE": "Active",
+    "status.PAUSED": "Paused",
+    "status.SOLD": "Sold",
+    "status.ARCHIVED": "Archived"
+  },
+  "part": {
+    "fitments": "Fits these cars",
+    "offersHeading": "Offers",
+    "noOffersYet": "No offers yet",
+    "offersSummary": "{{count}} offer(s) from {{price}}",
+    "viewOffers": "View offers"
+  },
+  "search": {
+    "title": "Search",
+    "helper": "Type a part name, OEM number, or brand.",
+    "placeholder": "e.g. brake pads, 34116855152",
+    "headerPlaceholder": "Search parts or OEM numbers",
+    "empty": "No matches. Try a shorter query or a part number."
   }
 }

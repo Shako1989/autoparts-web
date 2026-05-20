@@ -5,6 +5,7 @@ import { clsx } from 'clsx';
 
 import type { Diagram, DiagramCallout } from '@/api/catalog';
 import { DiagramViewer } from '@/components/catalog/DiagramViewer';
+import { PartListingsBadge } from '@/components/catalog/PartListingsBadge';
 
 export function DiagramBlock({ diagram }: { diagram: Diagram }): ReactElement {
   const sortedCallouts = useMemo(
@@ -126,6 +127,16 @@ function CalloutDetail({ callout }: { callout: DiagramCallout }): ReactElement {
       {part.partNumbers.length === 0 && (
         <p className="mt-3 text-xs text-slate-500">{t('catalog.diagram.noNumbers')}</p>
       )}
+
+      <div className="mt-3 flex items-center justify-between border-t border-slate-100 pt-3">
+        <PartListingsBadge partId={part.id} />
+        <Link
+          to={`/p/${part.id}`}
+          className="text-xs font-medium text-slate-700 hover:underline"
+        >
+          {t('part.viewOffers')}
+        </Link>
+      </div>
     </div>
   );
 }

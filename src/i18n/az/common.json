@@ -10,11 +10,16 @@
     "categories": "Kateqoriyalar",
     "byCar": "Maşına görə",
     "cart": "Səbət",
-    "login": "Daxil ol"
+    "login": "Daxil ol",
+    "signOut": "Çıxış",
+    "mySellerPanel": "Elanlarım",
+    "becomeSeller": "Satıcı ol"
   },
   "actions": {
     "pingApi": "API yoxla",
-    "browse": "Bax"
+    "browse": "Bax",
+    "change": "Dəyiş",
+    "remove": "Sil"
   },
   "footer": {
     "rights": "Bütün hüquqlar qorunur."
@@ -54,5 +59,83 @@
     },
     "loading": "Yüklənir…",
     "empty": "Heç nə tapılmadı."
+  },
+  "auth": {
+    "signIn": "Daxil ol",
+    "helper": "Telefon nömrənizi daxil edin — birdəfəlik kod göndərəcəyik.",
+    "phone": "Telefon",
+    "fullName": "Ad Soyad",
+    "optional": "məcburi deyil",
+    "requestCode": "Kod göndər",
+    "code": "Kod",
+    "codeSent": "Kod {{phone}} nömrəsinə göndərildi",
+    "verify": "Davam et",
+    "changePhone": "Nömrəni dəyiş",
+    "devFetchOtp": "Dev kodu götür"
+  },
+  "seller": {
+    "onboardingTitle": "Satıcı ol",
+    "onboardingHelper": "Alıcılara kimlə işlədiklərini göstərin.",
+    "displayName": "Görünən ad",
+    "legalName": "Rəsmi ad",
+    "city": "Şəhər",
+    "contactPhone": "Əlaqə telefonu",
+    "whatsapp": "WhatsApp nömrəsi",
+    "bio": "Haqqında",
+    "submit": "Satıcı profili yarat",
+    "alreadyTitle": "Siz artıq satıcısınız",
+    "alreadyHelper": "Elanları idarə etmək üçün panelə keçin.",
+    "dashboardCta": "Paneli aç",
+    "dashboardTitle": "Elanlarım",
+    "newListing": "Yeni elan",
+    "noListings": "Hələ elan yoxdur — birincisini yaradın.",
+    "partPickerPlaceholder": "Hissəni adla və ya nömrə ilə axtarın"
+  },
+  "listing": {
+    "createTitle": "Yeni elan",
+    "editTitle": "Elanı redaktə et",
+    "part": "Hissə",
+    "titleField": "Başlıq",
+    "description": "Təsvir",
+    "condition": "Vəziyyət",
+    "quantity": "Say",
+    "price": "Qiymət",
+    "city": "Şəhər",
+    "statusField": "Status",
+    "save": "Yadda saxla",
+    "create": "Elanı dərc et",
+    "addPhoto": "Şəkil əlavə et",
+    "photos": "Şəkillər",
+    "photosAfterCreate": "Şəkillər elan yaradıldıqdan sonra əlavə oluna bilər.",
+    "partRequired": "Əvvəlcə hissəni seçin",
+    "priceInvalid": "Düzgün qiymət daxil edin",
+    "noPhoto": "Şəkil yoxdur",
+    "partInfo": "Hissə",
+    "seller": "Satıcı",
+    "callSeller": "Satıcıya zəng et",
+    "whatsapp": "WhatsApp",
+    "quantityAvailable": "{{count}} ədəd mövcuddur",
+    "condition.NEW": "Yeni",
+    "condition.USED": "İşlənmiş",
+    "condition.REFURBISHED": "Bərpa edilmiş",
+    "status.DRAFT": "Qaralama",
+    "status.ACTIVE": "Aktiv",
+    "status.PAUSED": "Dayandırılıb",
+    "status.SOLD": "Satılıb",
+    "status.ARCHIVED": "Arxiv"
+  },
+  "part": {
+    "fitments": "Bu maşınlara uyğundur",
+    "offersHeading": "Təkliflər",
+    "noOffersYet": "Hələ təklif yoxdur",
+    "offersSummary": "{{count}} təklif {{price}} qiymətindən",
+    "viewOffers": "Təkliflərə bax"
+  },
+  "search": {
+    "title": "Axtarış",
+    "helper": "Hissə adı, OEM nömrəsi və ya marka yazın.",
+    "placeholder": "məs.: əyləc kolodkası, 34116855152",
+    "headerPlaceholder": "Hissə və ya OEM nömrəsi axtar",
+    "empty": "Heç nə tapılmadı. Daha qısa sorğu və ya hissə nömrəsi yoxlayın."
   }
 }
