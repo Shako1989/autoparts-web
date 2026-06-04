@@ -57,6 +57,9 @@ export function Header(): ReactElement {
           )}
           {user && (
             <div className="flex items-center gap-3 text-sm">
+              {(user.role === 'STAFF' || user.role === 'ADMIN') && (
+                <Link to="/admin" className="hover:underline">{t('nav.admin')}</Link>
+              )}
               {user.role === 'SELLER' || user.role === 'STAFF' || user.role === 'ADMIN' ? (
                 <Link to="/sell" className="hover:underline">{t('nav.mySellerPanel')}</Link>
               ) : (

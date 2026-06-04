@@ -72,6 +72,12 @@ export interface PartListingStats {
   currency: string | null;
 }
 
+export interface FitmentInput {
+  makeSlug: string;
+  modelSlug: string;
+  year: number;
+}
+
 export interface CreateListingRequest {
   partId: string;
   title: string;
@@ -81,6 +87,7 @@ export interface CreateListingRequest {
   currency: string;
   quantity: number;
   city?: string;
+  fitments?: FitmentInput[];
 }
 
 export interface UpdateListingRequest {

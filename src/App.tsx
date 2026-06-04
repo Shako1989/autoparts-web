@@ -6,6 +6,7 @@ import { Header } from '@/components/layout/Header';
 import { Footer } from '@/components/layout/Footer';
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import { RequireSeller } from '@/components/auth/RequireSeller';
+import { RequireAdmin } from '@/components/auth/RequireAdmin';
 
 const HomePage = lazy(() => import('@/pages/HomePage'));
 const CategoryPage = lazy(() => import('@/pages/CategoryPage'));
@@ -18,6 +19,11 @@ const LoginPage = lazy(() => import('@/pages/LoginPage'));
 const SellerOnboardingPage = lazy(() => import('@/pages/SellerOnboardingPage'));
 const SellerDashboardPage = lazy(() => import('@/pages/SellerDashboardPage'));
 const ListingEditorPage = lazy(() => import('@/pages/ListingEditorPage'));
+const AdminDashboardPage = lazy(() => import('@/pages/AdminDashboardPage'));
+const CategoryListPage = lazy(() => import('@/pages/CategoryListPage'));
+const CategoryEditorPage = lazy(() => import('@/pages/CategoryEditorPage'));
+const PartListPage = lazy(() => import('@/pages/PartListPage'));
+const PartEditorPage = lazy(() => import('@/pages/PartEditorPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -82,6 +88,62 @@ const router = createBrowserRouter([
           <RequireSeller>
             <ListingEditorPage mode="edit" />
           </RequireSeller>
+        ),
+      },
+      {
+        path: 'admin',
+        element: (
+          <RequireAdmin>
+            <AdminDashboardPage />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'admin/categories',
+        element: (
+          <RequireAdmin>
+            <CategoryListPage />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'admin/categories/new',
+        element: (
+          <RequireAdmin>
+            <CategoryEditorPage mode="create" />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'admin/categories/:id',
+        element: (
+          <RequireAdmin>
+            <CategoryEditorPage mode="edit" />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'admin/parts',
+        element: (
+          <RequireAdmin>
+            <PartListPage />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'admin/parts/new',
+        element: (
+          <RequireAdmin>
+            <PartEditorPage mode="create" />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'admin/parts/:id',
+        element: (
+          <RequireAdmin>
+            <PartEditorPage mode="edit" />
+          </RequireAdmin>
         ),
       },
     ],

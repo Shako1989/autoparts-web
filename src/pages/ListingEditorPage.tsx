@@ -12,6 +12,8 @@ import {
 import type { SearchHit } from '@/api/search';
 import { PartPicker } from '@/components/seller/PartPicker';
 import { PhotoUploader } from '@/components/seller/PhotoUploader';
+import { FitmentPicker } from '@/components/seller/FitmentPicker';
+import type { FitmentInput } from '@/api/listings';
 
 interface Props {
   mode: 'create' | 'edit';
@@ -38,6 +40,7 @@ export default function ListingEditorPage({ mode }: Props): ReactElement {
   const [quantity, setQuantity] = useState(1);
   const [city, setCity] = useState('');
   const [status, setStatus] = useState<ListingStatus>('ACTIVE');
+  const [fitments, setFitments] = useState<(FitmentInput & { label: string })[]>([]);
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -96,6 +99,9 @@ export default function ListingEditorPage({ mode }: Props): ReactElement {
           currency,
           quantity,
           city: city || undefined,
+          fitments: fitments.length > 0
+            ? fitments.map(({ makeSlug, modelSlug, year }) => ({ makeSlug, modelSlug, year }))
+            : undefined,
         });
         navigate(`/sell/listings/${created.id}`, { replace: true });
         return;
@@ -205,6 +211,20 @@ export default function ListingEditorPage({ mode }: Props): ReactElement {
               />
             </div>
           </div>
+
+          {!isEdit && (
+            <div>
+              <label className="block text-sm font-medium text-slate-700">
+                {t('listing.compatibleVehicles')}
+              </label>
+              <p className="mt-0.5 text-xs text-slate-500">
+                {t('listing.compatibleVehiclesHelp')}
+              </p>
+              <div className="mt-2">
+                <FitmentPicker value={fitments} onChange={setFitments} />
+              </div>
+            </div>
+          )}
 
           {isEdit && (
             <div>

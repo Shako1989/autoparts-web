@@ -141,8 +141,12 @@ const KEY = {
   variants: (modelId: string, year: number) => ['catalog', 'variants', modelId, year] as const,
   tree: (lang: string) => ['catalog', 'tree', lang] as const,
   category: (slug: string, lang: string) => ['catalog', 'category', slug, lang] as const,
-  partsInCategory: (slug: string, page: number, size: number, lang: string) =>
-    ['catalog', 'category', slug, 'parts', page, size, lang] as const,
+  partsInCategory: (
+    slug: string, page: number, size: number, lang: string,
+    makeSlug?: string | null, modelSlug?: string | null, year?: number | null,
+  ) =>
+    ['catalog', 'category', slug, 'parts', page, size, lang,
+     makeSlug ?? null, modelSlug ?? null, year ?? null] as const,
   part: (id: string, lang: string) => ['catalog', 'part', id, lang] as const,
   fitments: (partId: string) => ['catalog', 'fitments', partId] as const,
   diagram: (slug: string, lang: string) => ['catalog', 'diagram', slug, lang] as const,
@@ -220,13 +224,24 @@ export function usePartsInCategory(
   slug: string | undefined,
   page = 0,
   size = 20,
+  filter?: { makeSlug?: string | null; modelSlug?: string | null; year?: number | null },
 ): ReturnType<typeof useQuery<PageResponse<PartListItem>>> {
   const { i18n } = useTranslation();
   const lang = i18n.resolvedLanguage ?? 'az';
+  const mk = filter?.makeSlug ?? null;
+  const m = filter?.modelSlug ?? null;
+  const y = filter?.year ?? null;
   return useQuery({
-    queryKey: KEY.partsInCategory(slug ?? '', page, size, lang),
-    queryFn: () =>
-      get<PageResponse<PartListItem>>(`/v1/catalog/categories/${slug}/parts?page=${page}&size=${size}`),
+    queryKey: KEY.partsInCategory(slug ?? '', page, size, lang, mk, m, y),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      params.set('page', String(page));
+      params.set('size', String(size));
+      if (mk) params.set('make', mk);
+      if (m) params.set('model', m);
+      if (y !== null && y !== undefined) params.set('year', String(y));
+      return get<PageResponse<PartListItem>>(`/v1/catalog/categories/${slug}/parts?${params}`);
+    },
     enabled: !!slug,
     ...longStale,
   });

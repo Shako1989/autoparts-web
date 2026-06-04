@@ -13,13 +13,15 @@
     "login": "Войти",
     "signOut": "Выйти",
     "mySellerPanel": "Мои объявления",
-    "becomeSeller": "Стать продавцом"
+    "becomeSeller": "Стать продавцом",
+    "admin": "Админ"
   },
   "actions": {
     "pingApi": "Проверить API",
     "browse": "Открыть",
     "change": "Изменить",
-    "remove": "Удалить"
+    "remove": "Удалить",
+    "add": "Добавить"
   },
   "footer": {
     "rights": "Все права защищены."
@@ -31,6 +33,7 @@
   },
   "catalog": {
     "popularMakes": "Популярные марки",
+    "filteredBy": "Фильтр",
     "categories": "Категории",
     "vehiclePicker": {
       "title": "Найти по автомобилю",
@@ -89,7 +92,12 @@
     "dashboardTitle": "Мои объявления",
     "newListing": "Новое объявление",
     "noListings": "Объявлений пока нет — создайте первое.",
-    "partPickerPlaceholder": "Найти деталь по названию или номеру"
+    "partPickerPlaceholder": "Найти деталь по названию или номеру",
+    "partPicker": {
+      "browse": "Каталог",
+      "search": "Поиск",
+      "allCategories": "Все категории"
+    }
   },
   "listing": {
     "createTitle": "Новое объявление",
@@ -102,6 +110,8 @@
     "price": "Цена",
     "city": "Город",
     "statusField": "Статус",
+    "compatibleVehicles": "Подходит для",
+    "compatibleVehiclesHelp": "Укажите марку, модель и год автомобилей, к которым подходит деталь. Покупатели с выбранным автомобилем увидят ваше объявление.",
     "save": "Сохранить",
     "create": "Опубликовать",
     "addPhoto": "Добавить фото",

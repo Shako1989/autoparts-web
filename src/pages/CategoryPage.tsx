@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, X } from 'lucide-react';
 
 import {
   useCategory,
@@ -11,12 +11,19 @@ import {
 } from '@/api/catalog';
 import { CategoryIcon } from '@/components/catalog/CategoryIcon';
 import { DiagramBlock } from '@/components/catalog/DiagramBlock';
+import { useActiveVehicle, useGarageStore } from '@/store/garageStore';
 
 export default function CategoryPage(): ReactElement {
   const { t } = useTranslation();
   const { slug } = useParams<{ slug: string }>();
   const { data, isLoading, isError } = useCategory(slug);
-  const partsQ = usePartsInCategory(slug);
+  const activeVehicle = useActiveVehicle();
+  const clearActive = useGarageStore((s) => s.clearActive);
+  const partsQ = usePartsInCategory(slug, 0, 20, {
+    makeSlug: activeVehicle?.makeSlug,
+    modelSlug: activeVehicle?.modelSlug,
+    year: activeVehicle?.year,
+  });
   const diagramsQ = useCategoryDiagrams(slug);
 
   if (isLoading) return <Page>{t('catalog.loading')}</Page>;
@@ -29,6 +36,21 @@ export default function CategoryPage(): ReactElement {
         <CategoryIcon slug={data.slug} className="h-7 w-7 text-slate-700" aria-hidden />
         <h1 className="text-3xl font-semibold">{data.name}</h1>
       </div>
+
+      {activeVehicle && (
+        <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-amber-300 bg-amber-50 px-3 py-1 text-sm text-amber-900">
+          <span className="font-medium">{t('catalog.filteredBy')}:</span>
+          <span>{activeVehicle.label}</span>
+          <button
+            type="button"
+            onClick={clearActive}
+            className="rounded-full p-0.5 hover:bg-amber-100"
+            aria-label={t('actions.remove') ?? 'Clear'}
+          >
+            <X className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
 
       {data.children.length > 0 && (
         <section className="mt-8">

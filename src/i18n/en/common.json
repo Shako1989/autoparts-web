@@ -13,13 +13,15 @@
     "login": "Sign in",
     "signOut": "Sign out",
     "mySellerPanel": "My listings",
-    "becomeSeller": "Become a seller"
+    "becomeSeller": "Become a seller",
+    "admin": "Admin"
   },
   "actions": {
     "pingApi": "Ping API",
     "browse": "Browse",
     "change": "Change",
-    "remove": "Remove"
+    "remove": "Remove",
+    "add": "Add"
   },
   "footer": {
     "rights": "All rights reserved."
@@ -31,6 +33,7 @@
   },
   "catalog": {
     "popularMakes": "Popular makes",
+    "filteredBy": "Filtered by",
     "categories": "Categories",
     "vehiclePicker": {
       "title": "Find by car",
@@ -89,7 +92,12 @@
     "dashboardTitle": "My listings",
     "newListing": "New listing",
     "noListings": "No listings yet — create your first one.",
-    "partPickerPlaceholder": "Search a part by name or number"
+    "partPickerPlaceholder": "Search a part by name or number",
+    "partPicker": {
+      "browse": "Browse catalog",
+      "search": "Search",
+      "allCategories": "All categories"
+    }
   },
   "listing": {
     "createTitle": "New listing",
@@ -102,6 +110,8 @@
     "price": "Price",
     "city": "City",
     "statusField": "Status",
+    "compatibleVehicles": "Compatible vehicles",
+    "compatibleVehiclesHelp": "Pick the make, model, and year of cars this part fits. Buyers filtering by car will see your listing.",
     "save": "Save changes",
     "create": "Publish listing",
     "addPhoto": "Add photo",

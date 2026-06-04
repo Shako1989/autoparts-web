@@ -1,10 +1,11 @@
-import { useMemo, type ReactElement } from 'react';
+import { useEffect, useMemo, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Link, useParams } from 'react-router-dom';
 import { Car } from 'lucide-react';
 
 import { useCategoryTree, useMakes, useModels } from '@/api/catalog';
 import { CategoryIcon } from '@/components/catalog/CategoryIcon';
+import { useGarageStore } from '@/store/garageStore';
 
 export default function VehiclePage(): ReactElement {
   const { t } = useTranslation();
@@ -30,6 +31,19 @@ export default function VehiclePage(): ReactElement {
 
   const isLoading = makesQ.isLoading || modelsQ.isLoading;
   const notFound = !isLoading && (!make || !model || Number.isNaN(yearNum));
+
+  const setActive = useGarageStore((s) => s.setActive);
+  useEffect(() => {
+    if (makeSlug && modelSlug && !Number.isNaN(yearNum) && make && model) {
+      setActive({
+        variantId: `${makeSlug}-${modelSlug}-${yearNum}`,
+        makeSlug,
+        modelSlug,
+        year: yearNum,
+        label: `${make.name} ${model.name} ${yearNum}`,
+      });
+    }
+  }, [makeSlug, modelSlug, yearNum, make, model, setActive]);
 
   return (
     <main className="container mx-auto px-4 py-10">

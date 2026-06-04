@@ -13,13 +13,15 @@
     "login": "Daxil ol",
     "signOut": "Çıxış",
     "mySellerPanel": "Elanlarım",
-    "becomeSeller": "Satıcı ol"
+    "becomeSeller": "Satıcı ol",
+    "admin": "Admin"
   },
   "actions": {
     "pingApi": "API yoxla",
     "browse": "Bax",
     "change": "Dəyiş",
-    "remove": "Sil"
+    "remove": "Sil",
+    "add": "Əlavə et"
   },
   "footer": {
     "rights": "Bütün hüquqlar qorunur."
@@ -31,6 +33,7 @@
   },
   "catalog": {
     "popularMakes": "Populyar markalar",
+    "filteredBy": "Filtr",
     "categories": "Kateqoriyalar",
     "vehiclePicker": {
       "title": "Maşına görə tapın",
@@ -89,7 +92,12 @@
     "dashboardTitle": "Elanlarım",
     "newListing": "Yeni elan",
     "noListings": "Hələ elan yoxdur — birincisini yaradın.",
-    "partPickerPlaceholder": "Hissəni adla və ya nömrə ilə axtarın"
+    "partPickerPlaceholder": "Hissəni adla və ya nömrə ilə axtarın",
+    "partPicker": {
+      "browse": "Kataloqa bax",
+      "search": "Axtar",
+      "allCategories": "Bütün kateqoriyalar"
+    }
   },
   "listing": {
     "createTitle": "Yeni elan",
@@ -102,6 +110,8 @@
     "price": "Qiymət",
     "city": "Şəhər",
     "statusField": "Status",
+    "compatibleVehicles": "Uyğun maşınlar",
+    "compatibleVehiclesHelp": "Bu hissənin uyğun olduğu marka, model və ili əlavə edin. Alıcılar maşına görə filtrlədikdə elanınız görünəcək.",
     "save": "Yadda saxla",
     "create": "Elanı dərc et",
     "addPhoto": "Şəkil əlavə et",
