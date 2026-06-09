@@ -1,28 +1,34 @@
 import { useEffect, useState, type FormEvent, type ReactElement } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Trash2 } from 'lucide-react';
+import { Trash2, Crosshair } from 'lucide-react';
 import { clsx } from 'clsx';
 
 import {
   useAdminCategories,
+  useAdminDiagram,
+  useAdminDiagrams,
   useAdminPart,
+  useAddCallout,
   useAddFitments,
   useAddPartNumber,
   useCreatePart,
+  useRemoveCallout,
   useRemoveFitment,
   useRemovePartNumber,
   useUpdatePart,
+  type AdminPartCalloutLocation,
   type PartNumberType,
 } from '@/api/admin';
 import type { FitmentInput } from '@/api/listings';
 import { LocalizedTextInput } from '@/components/admin/LocalizedTextInput';
 import { FitmentPicker } from '@/components/seller/FitmentPicker';
+import { DiagramCanvas } from '@/components/admin/DiagramCanvas';
 
 interface Props {
   mode: 'create' | 'edit';
 }
 
-type Tab = 'specs' | 'numbers' | 'fitments';
+type Tab = 'specs' | 'numbers' | 'fitments' | 'callouts';
 
 export default function PartEditorPage({ mode }: Props): ReactElement {
   const { id } = useParams<{ id: string }>();
@@ -30,7 +36,7 @@ export default function PartEditorPage({ mode }: Props): ReactElement {
   const [tab, setTab] = useState<Tab>('specs');
 
   return (
-    <main className="container mx-auto max-w-3xl px-4 py-10">
+    <main className="container mx-auto max-w-4xl px-4 py-10">
       <Link to="/admin/parts" className="text-xs text-slate-500 hover:underline">← Parts</Link>
       <h1 className="text-2xl font-semibold">{isEdit ? 'Edit part' : 'New part'}</h1>
 
@@ -39,6 +45,7 @@ export default function PartEditorPage({ mode }: Props): ReactElement {
           <TabButton active={tab === 'specs'} onClick={() => setTab('specs')} label="Specs" />
           <TabButton active={tab === 'numbers'} onClick={() => setTab('numbers')} label="Part numbers" />
           <TabButton active={tab === 'fitments'} onClick={() => setTab('fitments')} label="Fitments" />
+          <TabButton active={tab === 'callouts'} onClick={() => setTab('callouts')} label="Callouts" />
         </div>
       )}
 
@@ -46,6 +53,7 @@ export default function PartEditorPage({ mode }: Props): ReactElement {
         {(!isEdit || tab === 'specs') && <SpecsTab mode={mode} id={id} />}
         {isEdit && tab === 'numbers' && id && <NumbersTab partId={id} />}
         {isEdit && tab === 'fitments' && id && <FitmentsTab partId={id} />}
+        {isEdit && tab === 'callouts' && id && <CalloutsTab partId={id} />}
       </div>
     </main>
   );
@@ -86,7 +94,6 @@ function SpecsTab({ mode, id }: { mode: 'create' | 'edit'; id: string | undefine
   const [names, setNames] = useState({ az: '', ru: '', en: '' });
   const [brand, setBrand] = useState('');
   const [description, setDescription] = useState('');
-  const [defaultImageUrl, setDefaultImageUrl] = useState('');
   const [submitError, setSubmitError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -95,7 +102,6 @@ function SpecsTab({ mode, id }: { mode: 'create' | 'edit'; id: string | undefine
       setNames({ az: partQ.data.nameAz, ru: partQ.data.nameRu, en: partQ.data.nameEn });
       setBrand(partQ.data.brand ?? '');
       setDescription(partQ.data.description ?? '');
-      setDefaultImageUrl(partQ.data.defaultImageUrl ?? '');
     }
   }, [partQ.data]);
 
@@ -111,7 +117,6 @@ function SpecsTab({ mode, id }: { mode: 'create' | 'edit'; id: string | undefine
           nameEn: names.en,
           brand,
           description,
-          defaultImageUrl,
         });
       } else {
         const created = await create.mutateAsync({
@@ -121,7 +126,6 @@ function SpecsTab({ mode, id }: { mode: 'create' | 'edit'; id: string | undefine
           nameEn: names.en,
           brand: brand || undefined,
           description: description || undefined,
-          defaultImageUrl: defaultImageUrl || undefined,
         });
         navigate(`/admin/parts/${created.id}`, { replace: true });
         return;
@@ -155,30 +159,17 @@ function SpecsTab({ mode, id }: { mode: 'create' | 'edit'; id: string | undefine
 
       <LocalizedTextInput label="Name" values={names} onChange={setNames} required maxLength={255} />
 
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label className="block text-sm font-medium text-slate-700">Manufacturer (brand)</label>
-          <input
-            type="text"
-            value={brand}
-            onChange={(e) => setBrand(e.target.value)}
-            placeholder="Bosch, BMW, Mahle, …"
-            maxLength={120}
-            className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
-          />
-          <p className="mt-1 text-xs text-slate-500">Who manufactures the part (not the car).</p>
-        </div>
-        <div>
-          <label className="block text-sm font-medium text-slate-700">Default image URL</label>
-          <input
-            type="text"
-            value={defaultImageUrl}
-            onChange={(e) => setDefaultImageUrl(e.target.value)}
-            placeholder="http://localhost:9000/…/image.png"
-            maxLength={255}
-            className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
-          />
-        </div>
+      <div>
+        <label className="block text-sm font-medium text-slate-700">Manufacturer (brand)</label>
+        <input
+          type="text"
+          value={brand}
+          onChange={(e) => setBrand(e.target.value)}
+          placeholder="Bosch, BMW, Mahle, …"
+          maxLength={120}
+          className="mt-1 block w-full max-w-md rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
+        />
+        <p className="mt-1 text-xs text-slate-500">Who manufactures the part (not the car).</p>
       </div>
 
       <div>
@@ -357,6 +348,250 @@ function FitmentsTab({ partId }: { partId: string }): ReactElement {
         {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
       </div>
     </div>
+  );
+}
+
+function CalloutsTab({ partId }: { partId: string }): ReactElement {
+  const partQ = useAdminPart(partId);
+  const locations = partQ.data?.calloutLocations ?? [];
+
+  return (
+    <div className="space-y-6">
+      <section>
+        <h2 className="text-sm font-semibold text-slate-700">Appears on these diagrams</h2>
+        {locations.length === 0 ? (
+          <p className="mt-2 text-sm text-slate-500">
+            This part isn't on any diagram yet. Add it below.
+          </p>
+        ) : (
+          <ul className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {locations.map((loc) => (
+              <li key={loc.calloutId}>
+                <CalloutLocationCard partId={partId} loc={loc} />
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
+
+      <AddToDiagramPanel
+        partId={partId}
+        partName={partQ.data?.nameEn ?? ''}
+        existing={locations}
+      />
+    </div>
+  );
+}
+
+function CalloutLocationCard({
+  partId,
+  loc,
+}: {
+  partId: string;
+  loc: AdminPartCalloutLocation;
+}): ReactElement {
+  const remove = useRemoveCallout(loc.diagramId);
+
+  async function handleRemove(): Promise<void> {
+    if (!confirm(`Remove this part from "${loc.diagramTitleEn}"?`)) return;
+    try {
+      await remove.mutateAsync(loc.calloutId);
+    } catch (err) {
+      alert(extractError(err));
+    }
+  }
+
+  // Position the marker proportionally on the rendered preview.
+  const left = (loc.x / loc.diagramImageWidth) * 100;
+  const top = (loc.y / loc.diagramImageHeight) * 100;
+
+  return (
+    <div className="overflow-hidden rounded-lg border border-slate-200 bg-white">
+      <div
+        className="relative w-full bg-slate-100"
+        style={{ aspectRatio: `${loc.diagramImageWidth} / ${loc.diagramImageHeight}` }}
+      >
+        <img src={loc.diagramImageUrl} alt="" className="absolute inset-0 h-full w-full object-contain" />
+        <div
+          className="absolute -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-amber-700 bg-amber-400 px-2 py-0.5 text-xs font-semibold text-slate-900"
+          style={{ left: `${left}%`, top: `${top}%` }}
+        >
+          {loc.label}
+        </div>
+      </div>
+      <div className="flex items-center justify-between gap-3 p-3 text-sm">
+        <div className="min-w-0 flex-1">
+          <Link
+            to={`/admin/diagrams/${loc.diagramId}`}
+            className="block truncate font-medium text-slate-900 hover:underline"
+          >
+            {loc.diagramTitleEn}
+          </Link>
+          <div className="text-xs text-slate-500">callout "{loc.label}" at ({loc.x}, {loc.y})</div>
+        </div>
+        <button
+          type="button"
+          onClick={handleRemove}
+          className="rounded p-1 text-slate-500 hover:bg-red-100 hover:text-red-700"
+          aria-label="Remove"
+        >
+          <Trash2 className="h-4 w-4" aria-hidden />
+        </button>
+      </div>
+      <input type="hidden" value={partId} readOnly />
+    </div>
+  );
+}
+
+function AddToDiagramPanel({
+  partId,
+  partName,
+  existing,
+}: {
+  partId: string;
+  partName: string;
+  existing: AdminPartCalloutLocation[];
+}): ReactElement {
+  const diagramsQ = useAdminDiagrams();
+  const [selectedDiagramId, setSelectedDiagramId] = useState('');
+  const diagramQ = useAdminDiagram(selectedDiagramId || undefined);
+  const addCallout = useAddCallout(selectedDiagramId);
+
+  const [pending, setPending] = useState<{ x: number; y: number } | null>(null);
+  const [label, setLabel] = useState('');
+  const [error, setError] = useState<string | null>(null);
+
+  // Filter out diagrams where this part is already placed.
+  const usedDiagramIds = new Set(existing.map((l) => l.diagramId));
+  const availableDiagrams = (diagramsQ.data ?? []).filter((d) => !usedDiagramIds.has(d.id));
+
+  function suggestNextLabel(): string {
+    const all = diagramQ.data?.callouts ?? [];
+    const numeric = all
+      .map((c) => Number(c.label))
+      .filter((n) => Number.isFinite(n) && Number.isInteger(n) && n > 0);
+    return String((numeric.length === 0 ? 0 : Math.max(...numeric)) + 1);
+  }
+
+  function handleAdd(x: number, y: number): void {
+    setPending({ x, y });
+    if (!label.trim()) setLabel(suggestNextLabel());
+  }
+
+  async function commit(): Promise<void> {
+    setError(null);
+    if (!selectedDiagramId) { setError('Pick a diagram first'); return; }
+    if (!pending) { setError('Click on the diagram to set the position'); return; }
+    if (!label.trim()) { setError('Label is required'); return; }
+    try {
+      await addCallout.mutateAsync({
+        partId,
+        label: label.trim(),
+        x: pending.x,
+        y: pending.y,
+      });
+      setPending(null);
+      setLabel('');
+      setSelectedDiagramId('');
+    } catch (err) {
+      setError(extractError(err));
+    }
+  }
+
+  return (
+    <section className="rounded-lg border border-slate-200 bg-white p-4">
+      <h2 className="text-sm font-semibold text-slate-700">Add this part to another diagram</h2>
+      <p className="mt-1 text-xs text-slate-500">
+        Pick a diagram and click on the image to place a callout for <span className="font-medium">{partName}</span>.
+      </p>
+
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_auto] sm:items-end">
+        <div>
+          <label className="block text-xs font-medium text-slate-700">Diagram</label>
+          <select
+            value={selectedDiagramId}
+            onChange={(e) => { setSelectedDiagramId(e.target.value); setPending(null); setLabel(''); }}
+            className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
+          >
+            <option value="">(select)</option>
+            {availableDiagrams.map((d) => (
+              <option key={d.id} value={d.id}>
+                {d.titleEn} {d.categorySlug ? `· ${d.categorySlug}` : ''}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div>
+          <label className="block text-xs font-medium text-slate-700">Label</label>
+          <input
+            type="text"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            maxLength={20}
+            placeholder="e.g. 5"
+            className="mt-1 block w-24 rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
+          />
+        </div>
+        <button
+          type="button"
+          onClick={commit}
+          disabled={!pending || !selectedDiagramId || !label.trim() || addCallout.isPending}
+          className="rounded-md bg-slate-900 px-3 py-1.5 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
+        >
+          Add callout
+        </button>
+      </div>
+
+      {selectedDiagramId && diagramQ.data && (
+        <div className="mt-4">
+          <p className="mb-1 inline-flex items-center gap-1 text-xs text-amber-700">
+            <Crosshair className="h-3 w-3" aria-hidden />
+            {pending
+              ? `Marker placed at (${pending.x}, ${pending.y}). Click again to move.`
+              : 'Click on the image to place the marker.'}
+          </p>
+          <DiagramCanvas
+            imageUrl={diagramQ.data.imageUrl}
+            imageWidth={diagramQ.data.imageWidth}
+            imageHeight={diagramQ.data.imageHeight}
+            callouts={pending
+              ? [
+                  ...diagramQ.data.callouts,
+                  {
+                    id: '__pending',
+                    label: label || '?',
+                    x: pending.x,
+                    y: pending.y,
+                    w: null,
+                    h: null,
+                    zOrder: 999,
+                    notes: null,
+                    partId,
+                    partName,
+                  },
+                ]
+              : diagramQ.data.callouts}
+            selectedCalloutId="__pending"
+            addMode
+            onAddAt={handleAdd}
+            onSelect={() => { /* read-only here */ }}
+          />
+        </div>
+      )}
+
+      {error && <p className="mt-2 text-xs text-red-600">{error}</p>}
+      {availableDiagrams.length === 0 && diagramsQ.data && diagramsQ.data.length > 0 && (
+        <p className="mt-2 text-xs text-slate-500">
+          This part is already on every diagram in the catalog.
+        </p>
+      )}
+      {diagramsQ.data && diagramsQ.data.length === 0 && (
+        <p className="mt-2 text-xs text-slate-500">
+          No diagrams in the catalog yet — create one from{' '}
+          <Link to="/admin/diagrams/new" className="underline">Diagrams admin</Link>.
+        </p>
+      )}
+    </section>
   );
 }
 

@@ -8,6 +8,13 @@ import { useGarageStore } from '@/store/garageStore';
 
 interface VehiclePickerProps {
   presetMakeSlug?: string;
+  /** Hide the card chrome (title + padding) for inline embedding. */
+  compact?: boolean;
+  /**
+   * Called after the picked vehicle is added to the garage and set active.
+   * When provided, the picker does NOT navigate to /v/... — caller controls.
+   */
+  onPicked?: (vehicle: { makeSlug: string; modelSlug: string; year: number }) => void;
 }
 
 /**
@@ -18,7 +25,11 @@ export function VehiclePicker(props: VehiclePickerProps = {}): ReactElement {
   return <VehiclePickerInner key={props.presetMakeSlug ?? '__none__'} {...props} />;
 }
 
-function VehiclePickerInner({ presetMakeSlug }: VehiclePickerProps): ReactElement {
+function VehiclePickerInner({
+  presetMakeSlug,
+  compact,
+  onPicked,
+}: VehiclePickerProps): ReactElement {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const addVehicle = useGarageStore((s) => s.add);
@@ -63,12 +74,16 @@ function VehiclePickerInner({ presetMakeSlug }: VehiclePickerProps): ReactElemen
       year,
       label: `${makeSlug} ${modelSlug} ${year}`,
     });
-    navigate(`/v/${makeSlug}/${modelSlug}/${year}`);
+    if (onPicked) {
+      onPicked({ makeSlug, modelSlug, year });
+    } else {
+      navigate(`/v/${makeSlug}/${modelSlug}/${year}`);
+    }
   }
 
   return (
-    <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-      <h2 className="text-lg font-semibold mb-3">{t('catalog.vehiclePicker.title')}</h2>
+    <div className={compact ? '' : 'rounded-lg border border-slate-200 bg-white p-4 shadow-sm'}>
+      {!compact && <h2 className="text-lg font-semibold mb-3">{t('catalog.vehiclePicker.title')}</h2>}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <SelectField
           label={t('catalog.vehiclePicker.selectMake')}

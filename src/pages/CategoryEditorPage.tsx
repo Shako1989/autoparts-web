@@ -8,6 +8,7 @@ import {
   type AdminCategory,
 } from '@/api/admin';
 import { LocalizedTextInput } from '@/components/admin/LocalizedTextInput';
+import { ImageUploader } from '@/components/admin/ImageUploader';
 
 interface Props {
   mode: 'create' | 'edit';
@@ -145,29 +146,23 @@ export default function CategoryEditorPage({ mode }: Props): ReactElement {
           </select>
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-slate-700">Sort order</label>
-            <input
-              type="number"
-              min={0}
-              value={sortOrder}
-              onChange={(e) => setSortOrder(Math.max(0, Number(e.target.value)))}
-              className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-slate-700">Icon URL</label>
-            <input
-              type="text"
-              value={iconUrl}
-              onChange={(e) => setIconUrl(e.target.value)}
-              placeholder="http://localhost:9000/…/icon.png"
-              maxLength={255}
-              className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
-            />
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-slate-700">Sort order</label>
+          <input
+            type="number"
+            min={0}
+            value={sortOrder}
+            onChange={(e) => setSortOrder(Math.max(0, Number(e.target.value)))}
+            className="mt-1 block w-32 rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
+          />
         </div>
+
+        <ImageUploader
+          label="Icon"
+          value={iconUrl}
+          onChange={setIconUrl}
+          hint="JPG, PNG, WebP, or SVG. Uploads go to the catalog bucket in MinIO."
+        />
 
         <button
           type="submit"

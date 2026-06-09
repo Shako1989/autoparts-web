@@ -45,7 +45,9 @@
     "category": {
       "subcategories": "Alt kateqoriyalar",
       "partsHeading": "Bu kateqoriyada hissələr",
-      "partsPlaceholder": "Hissələrin siyahısı tezliklə görünəcək."
+      "partsPlaceholder": "Hissələrin siyahısı tezliklə görünəcək.",
+      "pickCarBannerTitle": "Uyğun hissələri görmək üçün maşınınızı seçin",
+      "pickCarBannerHelp": "Maşın seçilmədikdə bu kateqoriyadakı bütün hissələr göstərilir — sizin maşına uyğun olmayanlar da daxil olmaqla."
     },
     "vehicle": {
       "heading": "{{make}} {{model}} {{year}}",
@@ -118,6 +120,7 @@
     "photos": "Şəkillər",
     "photosAfterCreate": "Şəkillər elan yaradıldıqdan sonra əlavə oluna bilər.",
     "partRequired": "Əvvəlcə hissəni seçin",
+    "fitmentsRequired": "Ən azı bir uyğun maşın əlavə edin",
     "priceInvalid": "Düzgün qiymət daxil edin",
     "noPhoto": "Şəkil yoxdur",
     "partInfo": "Hissə",

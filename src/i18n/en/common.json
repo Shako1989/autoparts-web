@@ -45,7 +45,9 @@
     "category": {
       "subcategories": "Subcategories",
       "partsHeading": "Parts in this category",
-      "partsPlaceholder": "Parts listings will appear here."
+      "partsPlaceholder": "Parts listings will appear here.",
+      "pickCarBannerTitle": "Pick your car to see compatible parts",
+      "pickCarBannerHelp": "Without a car selected, all parts in this category are shown — including ones that may not fit your vehicle."
     },
     "vehicle": {
       "heading": "{{make}} {{model}} {{year}}",
@@ -118,6 +120,7 @@
     "photos": "Photos",
     "photosAfterCreate": "Photos can be added after the listing is created.",
     "partRequired": "Pick a part first",
+    "fitmentsRequired": "Add at least one compatible vehicle",
     "priceInvalid": "Enter a valid price",
     "noPhoto": "No photo",
     "partInfo": "Part",

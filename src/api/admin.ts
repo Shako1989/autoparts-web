@@ -39,6 +39,19 @@ export interface AdminFitmentEntry {
   position: string | null;
 }
 
+export interface AdminPartCalloutLocation {
+  calloutId: string;
+  diagramId: string;
+  diagramSlug: string;
+  diagramTitleEn: string;
+  diagramImageUrl: string;
+  diagramImageWidth: number;
+  diagramImageHeight: number;
+  label: string;
+  x: number;
+  y: number;
+}
+
 export interface AdminPart {
   id: string;
   categoryId: string;
@@ -51,6 +64,7 @@ export interface AdminPart {
   defaultImageUrl: string | null;
   partNumbers: AdminPartNumberEntry[];
   fitments: AdminFitmentEntry[];
+  calloutLocations: AdminPartCalloutLocation[];
 }
 
 export interface AdminPartListItem {
@@ -239,6 +253,201 @@ export function useRemovePartNumber(partId: string) {
       await apiClient.delete(`/v1/admin/parts/${partId}/numbers/${numberId}`);
     },
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'parts', 'detail', partId] }),
+  });
+}
+
+// ---------- diagrams ----------
+
+export interface AdminDiagramListItem {
+  id: string;
+  slug: string;
+  titleEn: string;
+  categoryId: string | null;
+  categorySlug: string | null;
+  imageUrl: string;
+  calloutCount: number;
+}
+
+export interface AdminCalloutEntry {
+  id: string;
+  label: string;
+  x: number;
+  y: number;
+  w: number | null;
+  h: number | null;
+  zOrder: number;
+  notes: string | null;
+  partId: string;
+  partName: string;
+}
+
+export interface AdminDiagram {
+  id: string;
+  slug: string;
+  titleAz: string;
+  titleRu: string;
+  titleEn: string;
+  imageUrl: string;
+  imageWidth: number;
+  imageHeight: number;
+  categoryId: string | null;
+  categorySlug: string | null;
+  vehicleVariantId: string | null;
+  callouts: AdminCalloutEntry[];
+}
+
+export interface CreateDiagramRequest {
+  slug: string;
+  titleAz: string;
+  titleRu: string;
+  titleEn: string;
+  imageUrl: string;
+  imageWidth: number;
+  imageHeight: number;
+  categoryId?: string | null;
+  vehicleVariantId?: string | null;
+}
+
+export interface UpdateDiagramRequest {
+  titleAz?: string;
+  titleRu?: string;
+  titleEn?: string;
+  imageUrl?: string;
+  imageWidth?: number;
+  imageHeight?: number;
+  categoryId?: string | null;
+  vehicleVariantId?: string | null;
+}
+
+export interface CreateCalloutRequest {
+  partId: string;
+  label: string;
+  x: number;
+  y: number;
+  w?: number;
+  h?: number;
+  zOrder?: number;
+  notes?: string;
+}
+
+export interface UpdateCalloutRequest {
+  partId?: string;
+  label?: string;
+  x?: number;
+  y?: number;
+  w?: number;
+  h?: number;
+  zOrder?: number;
+  notes?: string;
+}
+
+export function useAdminDiagrams(categoryId?: string | null) {
+  const params = new URLSearchParams();
+  if (categoryId) params.set('category', categoryId);
+  return useQuery<AdminDiagramListItem[]>({
+    queryKey: ['admin', 'diagrams', categoryId ?? null],
+    queryFn: async () =>
+      (await apiClient.get<AdminDiagramListItem[]>(
+        params.toString() ? `/v1/admin/diagrams?${params}` : '/v1/admin/diagrams',
+      )).data,
+    staleTime: 15_000,
+  });
+}
+
+export function useAdminDiagram(id: string | undefined) {
+  return useQuery<AdminDiagram>({
+    queryKey: ['admin', 'diagrams', 'detail', id],
+    queryFn: async () => (await apiClient.get<AdminDiagram>(`/v1/admin/diagrams/${id}`)).data,
+    enabled: !!id,
+    staleTime: 15_000,
+  });
+}
+
+export function useCreateDiagram() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: CreateDiagramRequest) => {
+      const { data } = await apiClient.post<AdminDiagram>('/v1/admin/diagrams', body);
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'diagrams'] }),
+  });
+}
+
+export function useUpdateDiagram(id: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: UpdateDiagramRequest) => {
+      const { data } = await apiClient.patch<AdminDiagram>(`/v1/admin/diagrams/${id}`, body);
+      return data;
+    },
+    onSuccess: (data) => {
+      qc.setQueryData(['admin', 'diagrams', 'detail', id], data);
+      qc.invalidateQueries({ queryKey: ['admin', 'diagrams'] });
+    },
+  });
+}
+
+export function useDeleteDiagram() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await apiClient.delete(`/v1/admin/diagrams/${id}`);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'diagrams'] }),
+  });
+}
+
+export function useAddCallout(diagramId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: CreateCalloutRequest) => {
+      const { data } = await apiClient.post<AdminCalloutEntry>(
+        `/v1/admin/diagrams/${diagramId}/callouts`, body);
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'diagrams', 'detail', diagramId] }),
+  });
+}
+
+export function useUpdateCallout(diagramId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ calloutId, body }: { calloutId: string; body: UpdateCalloutRequest }) => {
+      const { data } = await apiClient.patch<AdminCalloutEntry>(
+        `/v1/admin/diagrams/${diagramId}/callouts/${calloutId}`, body);
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'diagrams', 'detail', diagramId] }),
+  });
+}
+
+export function useRemoveCallout(diagramId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (calloutId: string) => {
+      await apiClient.delete(`/v1/admin/diagrams/${diagramId}/callouts/${calloutId}`);
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'diagrams', 'detail', diagramId] }),
+  });
+}
+
+// ---------- uploads ----------
+
+export interface AdminPresignedUpload {
+  uploadUrl: string;
+  s3Key: string;
+  publicUrl: string;
+  expiresInSeconds: number;
+}
+
+export function usePresignCatalogImage() {
+  return useMutation({
+    mutationFn: async (contentType: string) => {
+      const { data } = await apiClient.post<AdminPresignedUpload>(
+        '/v1/admin/uploads/catalog-image/presign', { contentType });
+      return data;
+    },
   });
 }
 

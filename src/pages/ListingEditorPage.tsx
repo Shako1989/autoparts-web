@@ -90,6 +90,10 @@ export default function ListingEditorPage({ mode }: Props): ReactElement {
           setSubmitError(t('listing.partRequired'));
           return;
         }
+        if (fitments.length === 0) {
+          setSubmitError(t('listing.fitmentsRequired'));
+          return;
+        }
         const created = await createMutation.mutateAsync({
           partId: part.partId,
           title,
@@ -99,9 +103,7 @@ export default function ListingEditorPage({ mode }: Props): ReactElement {
           currency,
           quantity,
           city: city || undefined,
-          fitments: fitments.length > 0
-            ? fitments.map(({ makeSlug, modelSlug, year }) => ({ makeSlug, modelSlug, year }))
-            : undefined,
+          fitments: fitments.map(({ makeSlug, modelSlug, year }) => ({ makeSlug, modelSlug, year })),
         });
         navigate(`/sell/listings/${created.id}`, { replace: true });
         return;
@@ -215,7 +217,7 @@ export default function ListingEditorPage({ mode }: Props): ReactElement {
           {!isEdit && (
             <div>
               <label className="block text-sm font-medium text-slate-700">
-                {t('listing.compatibleVehicles')}
+                {t('listing.compatibleVehicles')} <span className="text-red-600">*</span>
               </label>
               <p className="mt-0.5 text-xs text-slate-500">
                 {t('listing.compatibleVehiclesHelp')}
@@ -223,6 +225,11 @@ export default function ListingEditorPage({ mode }: Props): ReactElement {
               <div className="mt-2">
                 <FitmentPicker value={fitments} onChange={setFitments} />
               </div>
+              {fitments.length === 0 && (
+                <p className="mt-1 text-xs text-amber-700">
+                  {t('listing.fitmentsRequired')}
+                </p>
+              )}
             </div>
           )}
 
@@ -243,7 +250,11 @@ export default function ListingEditorPage({ mode }: Props): ReactElement {
 
           <button
             type="submit"
-            disabled={createMutation.isPending || updateMutation.isPending}
+            disabled={
+              createMutation.isPending
+              || updateMutation.isPending
+              || (!isEdit && fitments.length === 0)
+            }
             className="rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
           >
             {isEdit ? t('listing.save') : t('listing.create')}

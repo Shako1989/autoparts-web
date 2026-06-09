@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react';
 import { Link } from 'react-router-dom';
-import { FolderTree, Package, ChevronRight } from 'lucide-react';
+import { FolderTree, Package, ImagePlus, ChevronRight } from 'lucide-react';
 
 const SECTIONS = [
   {
@@ -14,6 +14,12 @@ const SECTIONS = [
     title: 'Parts',
     description: 'Add parts, edit specs in three locales, manage OEM/aftermarket numbers and fitments.',
     icon: Package,
+  },
+  {
+    to: '/admin/diagrams',
+    title: 'Diagrams',
+    description: 'Upload exploded-view images and place numbered callouts that link to parts.',
+    icon: ImagePlus,
   },
 ];
 

@@ -150,8 +150,12 @@ const KEY = {
   part: (id: string, lang: string) => ['catalog', 'part', id, lang] as const,
   fitments: (partId: string) => ['catalog', 'fitments', partId] as const,
   diagram: (slug: string, lang: string) => ['catalog', 'diagram', slug, lang] as const,
-  categoryDiagrams: (slug: string, lang: string) =>
-    ['catalog', 'category', slug, 'diagrams', lang] as const,
+  categoryDiagrams: (
+    slug: string, lang: string,
+    makeSlug?: string | null, modelSlug?: string | null, year?: number | null,
+  ) =>
+    ['catalog', 'category', slug, 'diagrams', lang,
+     makeSlug ?? null, modelSlug ?? null, year ?? null] as const,
 };
 
 // ---------- raw fetchers ----------
@@ -284,12 +288,25 @@ export function useDiagram(slug: string | undefined): ReturnType<typeof useQuery
 
 export function useCategoryDiagrams(
   slug: string | undefined,
+  filter?: { makeSlug?: string | null; modelSlug?: string | null; year?: number | null },
 ): ReturnType<typeof useQuery<Diagram[]>> {
   const { i18n } = useTranslation();
   const lang = i18n.resolvedLanguage ?? 'az';
+  const mk = filter?.makeSlug ?? null;
+  const m = filter?.modelSlug ?? null;
+  const y = filter?.year ?? null;
   return useQuery({
-    queryKey: KEY.categoryDiagrams(slug ?? '', lang),
-    queryFn: () => get<Diagram[]>(`/v1/catalog/categories/${slug}/diagrams`),
+    queryKey: KEY.categoryDiagrams(slug ?? '', lang, mk, m, y),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      if (mk) params.set('make', mk);
+      if (m) params.set('model', m);
+      if (y !== null && y !== undefined) params.set('year', String(y));
+      const path = params.toString()
+        ? `/v1/catalog/categories/${slug}/diagrams?${params}`
+        : `/v1/catalog/categories/${slug}/diagrams`;
+      return get<Diagram[]>(path);
+    },
     enabled: !!slug,
     ...longStale,
   });

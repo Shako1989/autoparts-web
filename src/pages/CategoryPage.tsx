@@ -11,6 +11,7 @@ import {
 } from '@/api/catalog';
 import { CategoryIcon } from '@/components/catalog/CategoryIcon';
 import { DiagramBlock } from '@/components/catalog/DiagramBlock';
+import { VehiclePicker } from '@/components/catalog/VehiclePicker';
 import { useActiveVehicle, useGarageStore } from '@/store/garageStore';
 
 export default function CategoryPage(): ReactElement {
@@ -24,7 +25,11 @@ export default function CategoryPage(): ReactElement {
     modelSlug: activeVehicle?.modelSlug,
     year: activeVehicle?.year,
   });
-  const diagramsQ = useCategoryDiagrams(slug);
+  const diagramsQ = useCategoryDiagrams(slug, {
+    makeSlug: activeVehicle?.makeSlug,
+    modelSlug: activeVehicle?.modelSlug,
+    year: activeVehicle?.year,
+  });
 
   if (isLoading) return <Page>{t('catalog.loading')}</Page>;
   if (isError || !data) return <Page>{t('catalog.empty')}</Page>;
@@ -50,6 +55,20 @@ export default function CategoryPage(): ReactElement {
             <X className="h-3.5 w-3.5" />
           </button>
         </div>
+      )}
+
+      {!activeVehicle && (
+        <section className="mt-4 rounded-lg border border-amber-300 bg-amber-50 p-4">
+          <p className="text-sm font-medium text-amber-900">
+            {t('catalog.category.pickCarBannerTitle')}
+          </p>
+          <p className="mt-0.5 text-xs text-amber-800">
+            {t('catalog.category.pickCarBannerHelp')}
+          </p>
+          <div className="mt-3">
+            <VehiclePicker compact onPicked={() => { /* banner hides automatically */ }} />
+          </div>
+        </section>
       )}
 
       {data.children.length > 0 && (
