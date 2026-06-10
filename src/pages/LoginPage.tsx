@@ -15,6 +15,7 @@ export default function LoginPage(): ReactElement {
 
   const [step, setStep] = useState<'phone' | 'code'>('phone');
   const [phone, setPhone] = useState('+994');
+  const [email, setEmail] = useState('');
   const [fullName, setFullName] = useState('');
   const [code, setCode] = useState('');
   const [submitError, setSubmitError] = useState<string | null>(null);
@@ -29,7 +30,11 @@ export default function LoginPage(): ReactElement {
     e.preventDefault();
     setSubmitError(null);
     try {
-      await requestOtp.mutateAsync({ phone, purpose: existingUser ? 'LOGIN' : 'REGISTER' });
+      await requestOtp.mutateAsync({
+        phone,
+        email: email.trim() || undefined,
+        purpose: existingUser ? 'LOGIN' : 'REGISTER',
+      });
       setStep('code');
     } catch (err) {
       setSubmitError(extractError(err));
@@ -64,6 +69,18 @@ export default function LoginPage(): ReactElement {
             <PhoneInput value={phone} onChange={setPhone} className="mt-1" />
           </div>
           <div>
+            <label className="block text-sm font-medium text-slate-700">{t('auth.email')}</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@example.com"
+              className="mt-1 block w-full rounded-md border border-slate-300 bg-white px-3 py-2 text-sm shadow-sm focus:border-slate-500 focus:outline-none"
+            />
+            <p className="mt-1 text-xs text-slate-500">{t('auth.emailHelp')}</p>
+          </div>
+          <div>
             <label className="block text-sm font-medium text-slate-700">
               {t('auth.fullName')} <span className="text-slate-400">({t('auth.optional')})</span>
             </label>
@@ -76,7 +93,7 @@ export default function LoginPage(): ReactElement {
           </div>
           <button
             type="submit"
-            disabled={requestOtp.isPending || phone.length < 8}
+            disabled={requestOtp.isPending || phone.length < 8 || !email.trim()}
             className="w-full rounded-md bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 disabled:opacity-50"
           >
             {requestOtp.isPending ? t('catalog.loading') : t('auth.requestCode')}
@@ -86,7 +103,7 @@ export default function LoginPage(): ReactElement {
       ) : (
         <form onSubmit={handleVerify} className="mt-6 space-y-4">
           <p className="text-sm text-slate-600">
-            {t('auth.codeSent', { phone })}
+            {t('auth.codeSent', { email })}
           </p>
           <div>
             <label className="block text-sm font-medium text-slate-700">{t('auth.code')}</label>

@@ -67,13 +67,15 @@
   },
   "auth": {
     "signIn": "Daxil ol",
-    "helper": "Telefon nömrənizi daxil edin — birdəfəlik kod göndərəcəyik.",
+    "helper": "Telefon və email-i daxil edin — kodu email-ə göndərəcəyik.",
     "phone": "Telefon",
+    "email": "Email",
+    "emailHelp": "Təsdiq kodunu bu ünvana göndəririk.",
     "fullName": "Ad Soyad",
     "optional": "məcburi deyil",
     "requestCode": "Kod göndər",
     "code": "Kod",
-    "codeSent": "Kod {{phone}} nömrəsinə göndərildi",
+    "codeSent": "Kod {{email}} ünvanına göndərildi",
     "verify": "Davam et",
     "changePhone": "Nömrəni dəyiş",
     "devFetchOtp": "Dev kodu götür"

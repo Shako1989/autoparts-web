@@ -7,6 +7,7 @@ export type OtpPurpose = 'LOGIN' | 'REGISTER';
 export interface MeResponse {
   id: string;
   phone: string;
+  email: string | null;
   fullName: string | null;
   role: 'BUYER' | 'SELLER' | 'STAFF' | 'ADMIN';
   hasSellerProfile: boolean;
@@ -22,6 +23,7 @@ export interface TokenResponse {
 
 export interface OtpRequestBody {
   phone: string;
+  email?: string;
   purpose: OtpPurpose;
 }
 

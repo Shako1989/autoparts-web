@@ -67,13 +67,15 @@
   },
   "auth": {
     "signIn": "Sign in",
-    "helper": "Enter your phone — we'll send a one-time code.",
+    "helper": "Enter your phone and email — we'll send a one-time code to your email.",
     "phone": "Phone",
+    "email": "Email",
+    "emailHelp": "We send the verification code to this address.",
     "fullName": "Full name",
     "optional": "optional",
     "requestCode": "Send code",
     "code": "Code",
-    "codeSent": "Code sent to {{phone}}",
+    "codeSent": "Code sent to {{email}}",
     "verify": "Continue",
     "changePhone": "Change phone",
     "devFetchOtp": "Fetch dev code"
