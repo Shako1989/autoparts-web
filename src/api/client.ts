@@ -3,7 +3,9 @@ import i18n from '@/i18n';
 import { useAuthStore } from '@/store/authStore';
 
 export const apiClient = axios.create({
-  baseURL: import.meta.env['VITE_API_URL'] ?? '/api',
+  baseURL:
+    import.meta.env['VITE_API_URL'] ??
+    (import.meta.env.PROD ? 'https://api.bakuparts.com/api' : '/api'),
   timeout: 15_000,
   headers: {
     'Content-Type': 'application/json',
