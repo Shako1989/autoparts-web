@@ -39,6 +39,7 @@
       "title": "Найти по автомобилю",
       "selectMake": "Марка",
       "selectModel": "Модель",
+      "selectGeneration": "Выберите поколение",
       "selectYear": "Год",
       "find": "Найти"
     },

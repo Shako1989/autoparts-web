@@ -39,6 +39,7 @@
       "title": "Find by car",
       "selectMake": "Make",
       "selectModel": "Model",
+      "selectGeneration": "Select generation",
       "selectYear": "Year",
       "find": "Find"
     },

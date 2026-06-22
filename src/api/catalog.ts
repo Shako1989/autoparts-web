@@ -24,6 +24,16 @@ export interface VehicleModel {
   yearTo: number | null;
 }
 
+export interface VehicleGeneration {
+  id: string;
+  modelId: string;
+  code: string | null;
+  name: string;
+  slug: string;
+  yearFrom: number;
+  yearTo: number | null;
+}
+
 export interface VehicleVariant {
   id: string;
   modelId: string;
@@ -138,6 +148,8 @@ const KEY = {
   makes: ['catalog', 'makes'] as const,
   models: (makeSlug: string) => ['catalog', 'models', makeSlug] as const,
   years: (modelId: string) => ['catalog', 'years', modelId] as const,
+  generations: (modelId: string) => ['catalog', 'generations', modelId] as const,
+  yearsByGeneration: (generationId: string) => ['catalog', 'yearsByGeneration', generationId] as const,
   variants: (modelId: string, year: number) => ['catalog', 'variants', modelId, year] as const,
   tree: (lang: string) => ['catalog', 'tree', lang] as const,
   category: (slug: string, lang: string) => ['catalog', 'category', slug, lang] as const,
@@ -187,6 +199,24 @@ export function useYears(modelId: string | undefined): ReturnType<typeof useQuer
     queryKey: KEY.years(modelId ?? ''),
     queryFn: () => get<number[]>(`/v1/catalog/models/${modelId}/years`),
     enabled: !!modelId,
+    ...longStale,
+  });
+}
+
+export function useGenerations(modelId: string | undefined): ReturnType<typeof useQuery<VehicleGeneration[]>> {
+  return useQuery({
+    queryKey: KEY.generations(modelId ?? ''),
+    queryFn: () => get<VehicleGeneration[]>(`/v1/catalog/models/${modelId}/generations`),
+    enabled: !!modelId,
+    ...longStale,
+  });
+}
+
+export function useYearsByGeneration(generationId: string | undefined): ReturnType<typeof useQuery<number[]>> {
+  return useQuery({
+    queryKey: KEY.yearsByGeneration(generationId ?? ''),
+    queryFn: () => get<number[]>(`/v1/catalog/generations/${generationId}/years`),
+    enabled: !!generationId,
     ...longStale,
   });
 }

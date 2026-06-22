@@ -7,6 +7,10 @@ export type GarageVehicle = {
   modelSlug: string;
   year: number;
   label: string;
+  // Present when the model had multiple generations and the user picked one.
+  // Absent for legacy garage entries written before this change.
+  generationSlug?: string;
+  generationCode?: string | null;
 };
 
 type GarageState = {

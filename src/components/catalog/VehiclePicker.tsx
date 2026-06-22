@@ -1,8 +1,8 @@
-import { useMemo, useState, type ReactElement } from 'react';
+import { useEffect, useMemo, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useMakes, useModels, useYears } from '@/api/catalog';
+import { useGenerations, useMakes, useModels, useYearsByGeneration } from '@/api/catalog';
 import { Button } from '@/components/ui/Button';
 import { useGarageStore } from '@/store/garageStore';
 
@@ -25,6 +25,17 @@ export function VehiclePicker(props: VehiclePickerProps = {}): ReactElement {
   return <VehiclePickerInner key={props.presetMakeSlug ?? '__none__'} {...props} />;
 }
 
+function formatGenerationLabel(
+  code: string | null,
+  name: string,
+  yearFrom: number,
+  yearTo: number | null,
+): string {
+  const display = code ?? name;
+  const range = yearTo !== null ? `${yearFrom}–${yearTo}` : `${yearFrom}–present`;
+  return `${display} (${range})`;
+}
+
 function VehiclePickerInner({
   presetMakeSlug,
   compact,
@@ -36,6 +47,7 @@ function VehiclePickerInner({
 
   const [makeSlug, setMakeSlug] = useState<string>(presetMakeSlug ?? '');
   const [modelSlug, setModelSlug] = useState<string>('');
+  const [generationId, setGenerationId] = useState<string>('');
   const [year, setYear] = useState<number | undefined>(undefined);
 
   const makesQ = useMakes();
@@ -46,16 +58,43 @@ function VehiclePickerInner({
     [modelsQ.data, modelSlug],
   );
 
-  const yearsQ = useYears(modelId);
+  const generationsQ = useGenerations(modelId);
+
+  // When generations load, auto-select if there is exactly one.
+  useEffect(() => {
+    const sole = generationsQ.data?.length === 1 ? generationsQ.data[0] : undefined;
+    if (sole) {
+      setGenerationId(sole.id);
+    }
+  }, [generationsQ.data]);
+
+  const showGenerationStep = (generationsQ.data ?? []).length > 1;
+
+  const activeGenerationId = generationId || undefined;
+
+  const yearsQ = useYearsByGeneration(activeGenerationId);
+  // useYears is kept for FitmentPicker — this component uses useYearsByGeneration only.
+
+  const selectedGeneration = useMemo(
+    () => (generationsQ.data ?? []).find((g) => g.id === generationId),
+    [generationsQ.data, generationId],
+  );
 
   function onMake(slug: string): void {
     setMakeSlug(slug);
     setModelSlug('');
+    setGenerationId('');
     setYear(undefined);
   }
 
   function onModel(slug: string): void {
     setModelSlug(slug);
+    setGenerationId('');
+    setYear(undefined);
+  }
+
+  function onGeneration(id: string): void {
+    setGenerationId(id);
     setYear(undefined);
   }
 
@@ -63,17 +102,38 @@ function VehiclePickerInner({
     setYear(value ? Number(value) : undefined);
   }
 
-  const canSubmit = !!(makeSlug && modelSlug && year);
+  const canSubmit = !!(makeSlug && modelSlug && activeGenerationId && year);
 
   function submit(): void {
     if (!canSubmit || !year) return;
+
+    const makeName =
+      (makesQ.data ?? []).find((m) => m.slug === makeSlug)?.name ?? makeSlug;
+    const modelName =
+      (modelsQ.data ?? []).find((m) => m.slug === modelSlug)?.name ?? modelSlug;
+
+    const isMultiGen = showGenerationStep;
+    const generationSlug = isMultiGen ? selectedGeneration?.slug : undefined;
+    const generationCode = isMultiGen ? (selectedGeneration?.code ?? null) : undefined;
+
+    const variantId = isMultiGen && generationSlug
+      ? `${makeSlug}-${modelSlug}-${generationSlug}-${year}`
+      : `${makeSlug}-${modelSlug}-${year}`;
+
+    const label = isMultiGen && generationCode
+      ? `${makeName} ${modelName} ${generationCode} ${year}`.replace(/\s{2,}/g, ' ').trim()
+      : `${makeSlug} ${modelSlug} ${year}`;
+
     addVehicle({
-      variantId: `${makeSlug}-${modelSlug}-${year}`,
+      variantId,
       makeSlug,
       modelSlug,
       year,
-      label: `${makeSlug} ${modelSlug} ${year}`,
+      label,
+      ...(generationSlug !== undefined ? { generationSlug } : {}),
+      ...(generationCode !== undefined ? { generationCode } : {}),
     });
+
     if (onPicked) {
       onPicked({ makeSlug, modelSlug, year });
     } else {
@@ -84,7 +144,7 @@ function VehiclePickerInner({
   return (
     <div className={compact ? '' : 'rounded-lg border border-slate-200 bg-white p-4 shadow-sm'}>
       {!compact && <h2 className="text-lg font-semibold mb-3">{t('catalog.vehiclePicker.title')}</h2>}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+      <div className={`grid grid-cols-1 gap-3 ${showGenerationStep ? 'sm:grid-cols-4' : 'sm:grid-cols-3'}`}>
         <SelectField
           label={t('catalog.vehiclePicker.selectMake')}
           value={makeSlug}
@@ -100,12 +160,25 @@ function VehiclePickerInner({
           loading={modelsQ.isFetching && !!makeSlug}
           options={(modelsQ.data ?? []).map((m) => ({ value: m.slug, label: m.name }))}
         />
+        {showGenerationStep && (
+          <SelectField
+            label={t('catalog.vehiclePicker.selectGeneration')}
+            value={generationId}
+            onChange={onGeneration}
+            disabled={!modelId}
+            loading={generationsQ.isFetching && !!modelId}
+            options={(generationsQ.data ?? []).map((g) => ({
+              value: g.id,
+              label: formatGenerationLabel(g.code, g.name, g.yearFrom, g.yearTo),
+            }))}
+          />
+        )}
         <SelectField
           label={t('catalog.vehiclePicker.selectYear')}
           value={year ? String(year) : ''}
           onChange={onYear}
-          disabled={!modelId}
-          loading={yearsQ.isFetching && !!modelId}
+          disabled={!activeGenerationId}
+          loading={yearsQ.isFetching && !!activeGenerationId}
           options={(yearsQ.data ?? []).map((y) => ({ value: String(y), label: String(y) }))}
         />
       </div>
