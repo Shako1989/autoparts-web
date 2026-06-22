@@ -26,6 +26,7 @@ const PartListPage = lazy(() => import('@/pages/PartListPage'));
 const PartEditorPage = lazy(() => import('@/pages/PartEditorPage'));
 const DiagramListPage = lazy(() => import('@/pages/DiagramListPage'));
 const DiagramEditorPage = lazy(() => import('@/pages/DiagramEditorPage'));
+const VehicleAdminPage = lazy(() => import('@/pages/VehicleAdminPage'));
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -169,6 +170,14 @@ const router = createBrowserRouter([
         element: (
           <RequireAdmin>
             <DiagramEditorPage mode="edit" />
+          </RequireAdmin>
+        ),
+      },
+      {
+        path: 'admin/vehicles',
+        element: (
+          <RequireAdmin>
+            <VehicleAdminPage />
           </RequireAdmin>
         ),
       },

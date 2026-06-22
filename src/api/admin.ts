@@ -474,3 +474,149 @@ export function useRemoveFitment(partId: string) {
     onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'parts', 'detail', partId] }),
   });
 }
+
+// ---------- vehicle generations ----------
+
+export interface AdminGeneration {
+  id: string;
+  modelId: string;
+  code: string | null;
+  name: string;
+  slug: string;
+  yearFrom: number;
+  yearTo: number | null;
+  variantCount: number;
+}
+
+export interface CreateGenerationRequest {
+  code?: string | null;
+  name: string;
+  slug: string;
+  yearFrom: number;
+  yearTo?: number | null;
+}
+
+export interface UpdateGenerationRequest {
+  code?: string | null;
+  name?: string;
+  slug?: string;
+  yearFrom?: number;
+  yearTo?: number | null;
+}
+
+export interface MoveVariantsRequest {
+  targetGenerationId: string;
+  variantIds: string[];
+}
+
+export interface VehicleVariantResponse {
+  id: string;
+  generationId: string;
+  modelId: string;
+  year: number;
+  trim: string | null;
+  engineCode: string | null;
+  bodyType: string | null;
+  fuel: string | null;
+}
+
+export function useAdminGenerations(modelId: string | undefined) {
+  return useQuery<AdminGeneration[]>({
+    queryKey: ['admin', 'generations', modelId ?? ''],
+    queryFn: async () =>
+      (await apiClient.get<AdminGeneration[]>(`/v1/admin/catalog/models/${modelId}/generations`)).data,
+    enabled: !!modelId,
+    staleTime: 30_000,
+  });
+}
+
+export function useCreateGeneration(modelId: string) {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async (body: CreateGenerationRequest) => {
+      const { data } = await apiClient.post<AdminGeneration>(
+        `/v1/admin/catalog/models/${modelId}/generations`,
+        body,
+      );
+      return data;
+    },
+    onSuccess: () => qc.invalidateQueries({ queryKey: ['admin', 'generations', modelId] }),
+  });
+}
+
+export function useUpdateGeneration() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, modelId, body }: { id: string; modelId: string; body: UpdateGenerationRequest }) => {
+      const { data } = await apiClient.patch<AdminGeneration>(
+        `/v1/admin/catalog/generations/${id}`,
+        body,
+      );
+      return { data, modelId };
+    },
+    onSuccess: ({ modelId }) =>
+      qc.invalidateQueries({ queryKey: ['admin', 'generations', modelId] }),
+  });
+}
+
+export function useDeleteGeneration() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({ id, modelId }: { id: string; modelId: string }) => {
+      await apiClient.delete(`/v1/admin/catalog/generations/${id}`);
+      return modelId;
+    },
+    onSuccess: (modelId) =>
+      qc.invalidateQueries({ queryKey: ['admin', 'generations', modelId] }),
+  });
+}
+
+export function useMoveVariants() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      srcId,
+      modelId,
+      body,
+    }: {
+      srcId: string;
+      modelId: string;
+      body: MoveVariantsRequest;
+    }) => {
+      const { data } = await apiClient.post<{ moved: number }>(
+        `/v1/admin/catalog/generations/${srcId}/move-variants`,
+        body,
+      );
+      return { data, srcId, modelId, targetId: body.targetGenerationId };
+    },
+    onSuccess: ({ srcId, modelId, targetId }) => {
+      qc.invalidateQueries({ queryKey: ['admin', 'generations', modelId] });
+      qc.invalidateQueries({ queryKey: ['admin', 'generation-variants', srcId] });
+      qc.invalidateQueries({ queryKey: ['admin', 'generation-variants', targetId] });
+    },
+  });
+}
+
+export function useVariantsForGeneration(generationId: string | undefined) {
+  return useQuery<VehicleVariantResponse[]>({
+    queryKey: ['admin', 'generation-variants', generationId ?? ''],
+    queryFn: async () => {
+      const years = (
+        await apiClient.get<number[]>(`/v1/catalog/generations/${generationId}/years`)
+      ).data;
+      if (years.length === 0) return [];
+      const perYear = await Promise.all(
+        years.map((y) =>
+          apiClient
+            .get<VehicleVariantResponse[]>(
+              `/v1/catalog/variants?generation=${generationId}&year=${y}`,
+            )
+            .then((r) => r.data),
+        ),
+      );
+      return perYear.flat();
+    },
+    enabled: !!generationId,
+    staleTime: 30_000,
+  });
+}

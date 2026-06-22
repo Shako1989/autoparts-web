@@ -152,5 +152,48 @@
     "placeholder": "məs.: əyləc kolodkası, 34116855152",
     "headerPlaceholder": "Hissə və ya OEM nömrəsi axtar",
     "empty": "Heç nə tapılmadı. Daha qısa sorğu və ya hissə nömrəsi yoxlayın."
+  },
+  "admin": {
+    "vehicles": {
+      "title": "Avtomobillər",
+      "subtitle": "Hər modelin nəsillərini idarə edin",
+      "pickMake": "Marka seçin",
+      "pickModel": "Model seçin",
+      "generations": "Nəsillər",
+      "newGeneration": "Yeni nəsil",
+      "present": "bu günə qədər",
+      "cols": {
+        "code": "Kod",
+        "name": "Ad",
+        "slug": "Slug",
+        "years": "İllər",
+        "variants": "Variantlar",
+        "actions": "Əməliyyatlar"
+      },
+      "edit": "Redaktə et",
+      "delete": "Sil",
+      "save": "Yadda saxla",
+      "cancel": "Ləğv et",
+      "confirmDelete": "\"{{name}}\" nəsilini silinsin? Bu geri qaytarıla bilməz.",
+      "variantsHeader": "Variantlar ({{count}})",
+      "moveTo": "Seçilənləri köçür",
+      "move": "Köçür",
+      "movedNotice": "{{count}} variant köçürüldü.",
+      "fields": {
+        "codeHint": "İstehsalçı kodu (məs. E90, F30, Mk7) — məcburi deyil",
+        "slugHint": "URL uyğun identifikator — kiçik hərf, rəqəm, tire",
+        "yearTo": "Bitiş ili (istehsal davam edirsə boş buraxın)"
+      },
+      "validation": {
+        "required": "Bu sahə mütləqdir.",
+        "tooLong": "Dəyər çox uzundur.",
+        "slugFormat": "Slug yalnız kiçik hərf, rəqəm və tiredən ibarət olmalıdır.",
+        "yearRange": "İl 1900 ilə {{max}} arasında olmalıdır.",
+        "invalidYear": "Düzgün il daxil edin.",
+        "yearToMin": "Bitiş ili başlanğıc ildən kiçik ola bilməz."
+      },
+      "noGenerations": "Hələ nəsil yoxdur. Birincisini yaradın.",
+      "pickModelFirst": "Nəsilləri görmək üçün marka və model seçin."
+    }
   }
 }

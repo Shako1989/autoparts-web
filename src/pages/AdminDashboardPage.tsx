@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react';
 import { Link } from 'react-router-dom';
-import { FolderTree, Package, ImagePlus, ChevronRight } from 'lucide-react';
+import { FolderTree, Package, ImagePlus, Car, ChevronRight } from 'lucide-react';
 
 const SECTIONS = [
   {
@@ -20,6 +20,12 @@ const SECTIONS = [
     title: 'Diagrams',
     description: 'Upload exploded-view images and place numbered callouts that link to parts.',
     icon: ImagePlus,
+  },
+  {
+    to: '/admin/vehicles',
+    title: 'Vehicles',
+    description: 'Manage vehicle generations and reassign variants across them (e.g. split BMW 3 Series into E90 / F30 / G20).',
+    icon: Car,
   },
 ];
 

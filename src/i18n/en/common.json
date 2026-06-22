@@ -152,5 +152,48 @@
     "placeholder": "e.g. brake pads, 34116855152",
     "headerPlaceholder": "Search parts or OEM numbers",
     "empty": "No matches. Try a shorter query or a part number."
+  },
+  "admin": {
+    "vehicles": {
+      "title": "Vehicles",
+      "subtitle": "Manage generations of each model",
+      "pickMake": "Select make",
+      "pickModel": "Select model",
+      "generations": "Generations",
+      "newGeneration": "New generation",
+      "present": "present",
+      "cols": {
+        "code": "Code",
+        "name": "Name",
+        "slug": "Slug",
+        "years": "Years",
+        "variants": "Variants",
+        "actions": "Actions"
+      },
+      "edit": "Edit",
+      "delete": "Delete",
+      "save": "Save",
+      "cancel": "Cancel",
+      "confirmDelete": "Delete generation \"{{name}}\"? This cannot be undone.",
+      "variantsHeader": "Variants ({{count}})",
+      "moveTo": "Move selected to",
+      "move": "Move",
+      "movedNotice": "{{count}} variant(s) moved.",
+      "fields": {
+        "codeHint": "Optional manufacturer code (e.g. E90, F30, Mk7)",
+        "slugHint": "URL-safe identifier — lowercase letters, digits, dashes",
+        "yearTo": "Year to (leave blank if still in production)"
+      },
+      "validation": {
+        "required": "This field is required.",
+        "tooLong": "Value is too long.",
+        "slugFormat": "Slug must be lowercase letters, digits, dashes.",
+        "yearRange": "Year must be between 1900 and {{max}}.",
+        "invalidYear": "Invalid year.",
+        "yearToMin": "Year to must be greater than or equal to year from."
+      },
+      "noGenerations": "No generations yet. Create the first one.",
+      "pickModelFirst": "Pick a make and model to see generations."
+    }
   }
 }
