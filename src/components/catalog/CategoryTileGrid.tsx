@@ -5,28 +5,41 @@ import { Link } from 'react-router-dom';
 import { useCategoryTree, type CategoryNode } from '@/api/catalog';
 import { CategoryIcon } from '@/components/catalog/CategoryIcon';
 
-const MAX_TILES = 8;
-
-export function CategoryTileGrid(): ReactElement {
+export function CategoryTileGrid(): ReactElement | null {
   const { t } = useTranslation();
   const { data, isLoading, isError } = useCategoryTree();
+  const loadedCount = data?.length;
 
-  if (isLoading) return <p className="text-sm text-slate-500">{t('catalog.loading')}</p>;
-  if (isError || !data) return <p className="text-sm text-red-600">{t('catalog.empty')}</p>;
+  if (isError) return null;
 
-  // useCategoryTree already returns only root nodes, each with a nested
-  // `children` array, so the array itself is the top-level list. No public
-  // "all categories" route exists in App.tsx (only /admin/categories, which
-  // is admin-gated), so the "See all" tile is intentionally omitted per the
-  // founder's fallback rule rather than linking to a route that doesn't fit.
-  const topLevel = data.slice(0, MAX_TILES);
+  if (isLoading) {
+    const skeletonCount = loadedCount ?? 8;
+    return (
+      <section className="container mx-auto px-4 py-12">
+        <h2 className="text-lg font-semibold text-slate-900 mb-6">{t('catalog.browseByCategoryTitle')}</h2>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+          {Array.from({ length: skeletonCount }).map((_, idx) => (
+            <div key={idx} className="bg-slate-100 animate-pulse rounded-lg h-24" />
+          ))}
+        </div>
+      </section>
+    );
+  }
+
+  const topLevel = data ?? [];
+  if (topLevel.length === 0) return null;
+
+  // TODO: cap at 8 + "see all" link if catalog grows
 
   return (
-    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
-      {topLevel.map((node) => (
-        <CategoryTile key={node.id} node={node} />
-      ))}
-    </div>
+    <section className="container mx-auto px-4 py-12">
+      <h2 className="text-lg font-semibold text-slate-900 mb-6">{t('catalog.browseByCategoryTitle')}</h2>
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
+        {topLevel.map((node) => (
+          <CategoryTile key={node.id} node={node} />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -36,17 +49,19 @@ function CategoryTile({ node }: { node: CategoryNode }): ReactElement {
   return (
     <Link
       to={`/c/${node.slug}`}
-      className="flex flex-col items-center gap-2 rounded-lg border border-slate-200 bg-white p-4 text-center shadow-sm hover:border-slate-400"
+      className="rounded-lg border border-slate-200 bg-white p-4 hover:border-slate-400 flex flex-col items-start gap-2"
     >
       {node.iconUrl ? (
         <img src={node.iconUrl} alt="" className="h-6 w-6 object-contain" />
       ) : (
-        <CategoryIcon slug={node.slug} className="h-6 w-6 text-slate-500" aria-hidden />
+        <CategoryIcon slug={node.slug} className="h-6 w-6 text-slate-600" />
       )}
-      <span className="font-medium text-sm">{node.name}</span>
-      <span className="text-xs text-slate-500">
-        {t('catalog.subcategoryCount', { count: node.children.length })}
-      </span>
+      <div className="font-medium text-sm">{node.name}</div>
+      {node.children.length > 0 && (
+        <div className="text-xs text-slate-500">
+          {t('catalog.subcategoryCount', { count: node.children.length })}
+        </div>
+      )}
     </Link>
   );
 }

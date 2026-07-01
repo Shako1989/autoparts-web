@@ -12,48 +12,48 @@ export default function HomePage(): ReactElement {
   const [presetMake, setPresetMake] = useState<string | undefined>(undefined);
 
   return (
-    <main className="container mx-auto px-4 py-10">
-      <section className="bg-slate-50 -mx-4 px-4 py-10 sm:mx-0 sm:rounded-lg">
-        <div className="max-w-2xl mx-auto text-center">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-slate-900">
+    <main>
+      <section className="bg-slate-50">
+        <div className="container mx-auto px-4 py-10 sm:py-16">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold tracking-tight text-slate-900 text-center max-w-3xl mx-auto">
             {t('hero.title')}
           </h1>
-          <p className="mt-2 text-base text-slate-600">{t('hero.subtitle')}</p>
+          <p className="text-base text-slate-600 mt-3 text-center max-w-2xl mx-auto">{t('hero.subtitle')}</p>
 
           {/* TODO: trust strip — pending real stats endpoint */}
 
-          <p className="mt-8 text-xs uppercase tracking-wide text-slate-500">
+          <p className="text-xs uppercase tracking-wide text-slate-500 mt-8 text-center">
             {t('hero.pickerEyebrow')}
           </p>
-        </div>
 
-        <div id="hero-picker" className="max-w-2xl mx-auto mt-3 bg-white rounded-lg">
-          <VehiclePicker presetMakeSlug={presetMake} />
-        </div>
+          <div id="vehicle-picker" className="mt-3 max-w-2xl mx-auto">
+            <VehiclePicker presetMakeSlug={presetMake} />
+          </div>
 
-        <div className="max-w-2xl mx-auto mt-3 text-center">
-          <a href="#browse-categories" className="text-sm text-slate-600 hover:text-slate-900 underline">
+          <a
+            href="#browse-categories"
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById('browse-categories')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="mt-3 block text-center text-sm text-slate-600 hover:text-slate-900 underline-offset-2 hover:underline"
+          >
             {t('hero.browseCategoriesLink')}
           </a>
         </div>
       </section>
 
-      <section className="mt-12">
-        <HowItWorks />
-      </section>
+      <HowItWorks />
 
-      <section id="browse-categories" className="mt-12">
-        <h2 className="text-lg font-semibold mb-3">{t('catalog.browseByCategoryTitle')}</h2>
+      <div id="browse-categories">
         <CategoryTileGrid />
-      </section>
+      </div>
 
-      <section className="mt-12">
+      <section className="container mx-auto px-4 py-12">
         <PopularMakes onSelect={setPresetMake} />
       </section>
 
-      <section className="mt-12 -mx-4">
-        <SellerHomeCta />
-      </section>
+      <SellerHomeCta />
     </main>
   );
 }

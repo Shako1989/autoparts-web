@@ -2,24 +2,24 @@
   "appName": "AutoParts.az",
   "tagline": "Auto parts marketplace for Azerbaijan",
   "hero": {
-    "title": "Real car parts for your vehicle",
-    "subtitle": "Pick your car, browse a category, or search by part number",
-    "pickerEyebrow": "Find parts for your car",
-    "browseCategoriesLink": "or browse by category ↓"
+    "title": "Genuine auto parts for your car",
+    "subtitle": "Pick your vehicle, browse a category, or search by part number",
+    "pickerEyebrow": "Find parts for your vehicle",
+    "browseCategoriesLink": "or browse categories ↓"
   },
   "howItWorks": {
     "title": "How it works",
     "step1": {
-      "title": "Pick your car or a category",
-      "body": "Find parts that match your make, model, and year"
+      "title": "Pick your vehicle or category",
+      "body": "Find matching parts by make, model, and year"
     },
     "step2": {
       "title": "Compare sellers",
-      "body": "See listings by city, price, and condition"
+      "body": "Browse listings by city, price, and condition"
     },
     "step3": {
       "title": "Contact the seller directly",
-      "body": "Via WhatsApp or phone call — you settle the deal directly with the seller"
+      "body": "By WhatsApp or call — the order is arranged off-platform"
     }
   },
   "nav": {
