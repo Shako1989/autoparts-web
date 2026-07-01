@@ -2,8 +2,25 @@
   "appName": "AutoParts.az",
   "tagline": "Auto parts marketplace for Azerbaijan",
   "hero": {
-    "title": "Find the right part for your car",
-    "subtitle": "Search by name, OEM number, or car make"
+    "title": "Real car parts for your vehicle",
+    "subtitle": "Pick your car, browse a category, or search by part number",
+    "pickerEyebrow": "Find parts for your car",
+    "browseCategoriesLink": "or browse by category ↓"
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "step1": {
+      "title": "Pick your car or a category",
+      "body": "Find parts that match your make, model, and year"
+    },
+    "step2": {
+      "title": "Compare sellers",
+      "body": "See listings by city, price, and condition"
+    },
+    "step3": {
+      "title": "Contact the seller directly",
+      "body": "Via WhatsApp or phone call — you settle the deal directly with the seller"
+    }
   },
   "nav": {
     "search": "Search",
@@ -35,6 +52,9 @@
     "popularMakes": "Popular makes",
     "filteredBy": "Filtered by",
     "categories": "Categories",
+    "browseByCategoryTitle": "Browse by category",
+    "seeAllCategories": "See all categories →",
+    "subcategoryCount": "{{count}} subcategories",
     "vehiclePicker": {
       "title": "Find by car",
       "selectMake": "Make",
@@ -82,6 +102,9 @@
     "devFetchOtp": "Fetch dev code"
   },
   "seller": {
+    "homeCtaTitle": "Have parts to sell?",
+    "homeCtaBody": "List your inventory and reach buyers across Azerbaijan",
+    "homeCtaButton": "Become a seller",
     "onboardingTitle": "Become a seller",
     "onboardingHelper": "Tell buyers who they're dealing with.",
     "displayName": "Display name",

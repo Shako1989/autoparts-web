@@ -2,8 +2,25 @@
   "appName": "AutoParts.az",
   "tagline": "Avtomobil ehtiyat hissələri marketpleysi",
   "hero": {
-    "title": "Maşınınız üçün ehtiyat hissəsi tapın",
-    "subtitle": "Ad, OEM nömrəsi və ya avtomobil markası ilə axtarın"
+    "title": "Öz avtomobiliniz üçün orijinal ehtiyat hissələri",
+    "subtitle": "Maşınınızı seçin, kateqoriyaya baxın və ya hissə nömrəsi ilə axtarın",
+    "pickerEyebrow": "Maşınınızı seçin",
+    "browseCategoriesLink": "və ya kateqoriyalara baxın ↓"
+  },
+  "howItWorks": {
+    "title": "Necə işləyir",
+    "step1": {
+      "title": "Maşınınızı və ya kateqoriyanı seçin",
+      "body": "Marka, model və ilə görə uyğun hissələri tapın"
+    },
+    "step2": {
+      "title": "Satıcıları müqayisə edin",
+      "body": "Şəhər, qiymət və vəziyyətə görə elanlara baxın"
+    },
+    "step3": {
+      "title": "Birbaşa satıcı ilə əlaqə saxlayın",
+      "body": "WhatsApp və ya zəng ilə — sifariş platformadan kənarda razılaşdırılır"
+    }
   },
   "nav": {
     "search": "Axtarış",
@@ -35,6 +52,9 @@
     "popularMakes": "Populyar markalar",
     "filteredBy": "Filtr",
     "categories": "Kateqoriyalar",
+    "browseByCategoryTitle": "Kateqoriyalara baxın",
+    "seeAllCategories": "Bütün kateqoriyalar →",
+    "subcategoryCount": "{{count}} altkateqoriya",
     "vehiclePicker": {
       "title": "Maşına görə tapın",
       "selectMake": "Marka seçin",
@@ -82,6 +102,9 @@
     "devFetchOtp": "Dev kodu götür"
   },
   "seller": {
+    "homeCtaTitle": "Satmaq üçün ehtiyat hissəniz var?",
+    "homeCtaBody": "Elanlarınızı yerləşdirin və Azərbaycan üzrə alıcılara çatın",
+    "homeCtaButton": "Satıcı olun",
     "onboardingTitle": "Satıcı ol",
     "onboardingHelper": "Alıcılara kimlə işlədiklərini göstərin.",
     "displayName": "Görünən ad",

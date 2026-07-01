@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
+import { Car } from 'lucide-react';
 
 import { useMakes } from '@/api/catalog';
 
@@ -11,6 +12,11 @@ export function PopularMakes({ onSelect }: PopularMakesProps): ReactElement {
   const { t } = useTranslation();
   const { data, isLoading } = useMakes();
 
+  function handleSelect(slug: string): void {
+    onSelect?.(slug);
+    document.getElementById('hero-picker')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+
   return (
     <section>
       <h2 className="text-lg font-semibold mb-3">{t('catalog.popularMakes')}</h2>
@@ -20,11 +26,17 @@ export function PopularMakes({ onSelect }: PopularMakesProps): ReactElement {
           <li key={m.id}>
             <button
               type="button"
-              onClick={() => onSelect?.(m.slug)}
+              onClick={() => handleSelect(m.slug)}
               className="w-full rounded-md border border-slate-200 bg-white p-3 text-center text-sm transition-colors hover:border-slate-400 hover:bg-slate-50"
             >
-              <div className="font-medium">{m.name}</div>
-              <div className="text-xs text-slate-500">★ {m.popularity}</div>
+              {m.logoUrl ? (
+                <img src={m.logoUrl} alt="" className="h-8 mx-auto object-contain" />
+              ) : (
+                <div className="h-8 w-8 mx-auto rounded-full bg-slate-100 flex items-center justify-center">
+                  <Car className="h-4 w-4 text-slate-500" aria-hidden />
+                </div>
+              )}
+              <div className="mt-2 font-medium">{m.name}</div>
             </button>
           </li>
         ))}
