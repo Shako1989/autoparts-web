@@ -3,40 +3,52 @@ import { useTranslation } from 'react-i18next';
 import { Car } from 'lucide-react';
 
 import { useMakes } from '@/api/catalog';
+import { SectionHeading } from '@/components/ui/SectionHeading';
 
 interface PopularMakesProps {
   onSelect?: (slug: string) => void;
 }
 
-export function PopularMakes({ onSelect }: PopularMakesProps): ReactElement {
+const MAX_MAKES = 12;
+
+export function PopularMakes({ onSelect }: PopularMakesProps): ReactElement | null {
   const { t } = useTranslation();
-  const { data, isLoading } = useMakes();
+  const { data, isLoading, isError } = useMakes();
 
   function handleSelect(slug: string): void {
     onSelect?.(slug);
     document.getElementById('vehicle-picker')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 
+  const makes = (data ?? []).slice(0, MAX_MAKES);
+  if (isError || (!isLoading && makes.length === 0)) return null;
+
   return (
     <section>
-      <h2 className="text-lg font-semibold mb-3">{t('catalog.popularMakes')}</h2>
-      {isLoading && <p className="text-sm text-slate-500">{t('catalog.loading')}</p>}
-      <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-6 gap-3">
-        {(data ?? []).slice(0, 12).map((make) => (
+      <SectionHeading title={t('catalog.popularMakes')} />
+      {isLoading && (
+        <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+          {Array.from({ length: MAX_MAKES }).map((_, idx) => (
+            <div key={idx} className="h-24 animate-pulse rounded-xl bg-slate-100" />
+          ))}
+        </div>
+      )}
+      <div className="grid grid-cols-3 gap-3 sm:grid-cols-4 lg:grid-cols-6">
+        {makes.map((make) => (
           <button
             key={make.id}
             type="button"
             onClick={() => handleSelect(make.slug)}
-            className="rounded-lg border border-slate-200 bg-white p-4 hover:border-slate-400 flex flex-col items-center gap-2 text-center"
+            className="group flex flex-col items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-4 text-center shadow-card transition-colors hover:border-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
           >
             {make.logoUrl ? (
-              <img src={make.logoUrl} alt="" className="h-8 object-contain" />
+              <img src={make.logoUrl} alt="" className="h-10 object-contain" />
             ) : (
-              <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center">
-                <Car className="h-5 w-5 text-slate-500" />
-              </div>
+              <span className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-100 text-slate-500 group-hover:bg-brand-soft group-hover:text-brand">
+                <Car className="h-5 w-5" aria-hidden />
+              </span>
             )}
-            <div className="text-sm font-medium mt-1">{make.name}</div>
+            <span className="text-sm font-semibold text-slate-800">{make.name}</span>
           </button>
         ))}
       </div>

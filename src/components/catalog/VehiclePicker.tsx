@@ -11,6 +11,8 @@ interface VehiclePickerProps {
   presetMakeSlug?: string;
   /** Hide the card chrome (title + padding) for inline embedding. */
   compact?: boolean;
+  /** Omit the "find by VIN" row (when the caller renders VIN lookup elsewhere). */
+  hideVin?: boolean;
   /**
    * Called after the picked vehicle is added to the garage and set active.
    * When provided, the picker does NOT navigate to /v/... — caller controls.
@@ -40,6 +42,7 @@ function formatGenerationLabel(
 function VehiclePickerInner({
   presetMakeSlug,
   compact,
+  hideVin,
   onPicked,
 }: VehiclePickerProps): ReactElement {
   const { t } = useTranslation();
@@ -190,7 +193,7 @@ function VehiclePickerInner({
           options={(yearsQ.data ?? []).map((y) => ({ value: String(y), label: String(y) }))}
         />
         <div className="flex items-end">
-          <Button onClick={submit} disabled={!canSubmit} className="w-full sm:w-auto">
+          <Button variant="brand" onClick={submit} disabled={!canSubmit} className="h-11 w-full px-6 sm:w-auto">
             {t('catalog.vehiclePicker.find')}
           </Button>
         </div>
@@ -207,7 +210,7 @@ function VehiclePickerInner({
           })}
         </p>
       )}
-      <VinLookup onMakeResolved={onMake} {...(onPicked ? { onPicked } : {})} />
+      {!hideVin && <VinLookup onMakeResolved={onMake} {...(onPicked ? { onPicked } : {})} />}
     </div>
   );
 }
@@ -224,9 +227,9 @@ interface SelectFieldProps {
 function SelectField({ label, value, onChange, options, disabled, loading }: SelectFieldProps): ReactElement {
   return (
     <label className="block text-sm">
-      <span className="block text-slate-600 mb-1">{label}</span>
+      <span className="mb-1 block font-medium text-slate-700">{label}</span>
       <select
-        className="w-full rounded-md border border-slate-300 bg-white px-3 py-2 disabled:bg-slate-50 disabled:text-slate-400"
+        className="h-11 w-full rounded-lg border border-slate-300 bg-white px-3 focus:border-brand focus:outline-none focus:ring-2 focus:ring-brand/20 disabled:bg-slate-50 disabled:text-slate-400"
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled || loading}

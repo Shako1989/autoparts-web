@@ -3,9 +3,34 @@
   "tagline": "Маркетплейс автозапчастей",
   "hero": {
     "title": "Оригинальные автозапчасти для вашего авто",
-    "subtitle": "Выберите автомобиль, категорию или найдите по номеру детали",
+    "subtitle": "Объявления, продавцы и все основные марки автомобилей в одном месте",
     "pickerEyebrow": "Найдите по своему авто",
-    "browseCategoriesLink": "или выберите категорию ↓"
+    "browseCategoriesLink": "или выберите категорию ↓",
+    "titleLead": "Найдите",
+    "titleHighlight": "нужную запчасть",
+    "titleTail": "для вашего авто легко",
+    "tabsLabel": "Способ поиска",
+    "tabs": {
+      "byVehicle": "По автомобилю",
+      "byPartName": "По названию детали",
+      "byOem": "По номеру OEM",
+      "byVin": "По VIN"
+    },
+    "partNamePlaceholder": "Например: тормозной диск, масляный фильтр",
+    "oemPlaceholder": "Например: 34116855152",
+    "search": "Найти",
+    "stats": {
+      "makes": "Марок: {{count}}",
+      "makesFallback": "Основные марки",
+      "makesBody": "Марки автомобилей в каталоге",
+      "categories": "Категорий: {{count}}",
+      "categoriesFallback": "Категории",
+      "categoriesBody": "Категории запчастей",
+      "coverage": "Весь Азербайджан",
+      "coverageBody": "Объявления по всей стране",
+      "contact": "Прямой контакт",
+      "contactBody": "WhatsApp или звонок продавцу"
+    }
   },
   "howItWorks": {
     "title": "Как это работает",
@@ -31,7 +56,9 @@
     "signOut": "Выйти",
     "mySellerPanel": "Мои объявления",
     "becomeSeller": "Стать продавцом",
-    "admin": "Админ"
+    "admin": "Админ",
+    "postListing": "Разместить объявление",
+    "postListingShort": "Подать"
   },
   "actions": {
     "pingApi": "Проверить API",

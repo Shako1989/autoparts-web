@@ -3,9 +3,34 @@
   "tagline": "Avtomobil ehtiyat hissələri marketpleysi",
   "hero": {
     "title": "Öz avtomobiliniz üçün orijinal ehtiyat hissələri",
-    "subtitle": "Maşınınızı seçin, kateqoriyaya baxın və ya hissə nömrəsi ilə axtarın",
+    "subtitle": "Elanlar, satıcılar və bütün əsas avtomobil markaları bir yerdə",
     "pickerEyebrow": "Maşınınızı seçin",
-    "browseCategoriesLink": "və ya kateqoriyalara baxın ↓"
+    "browseCategoriesLink": "və ya kateqoriyalara baxın ↓",
+    "titleLead": "Avtomobiliniz üçün",
+    "titleHighlight": "ehtiyat hissəsini",
+    "titleTail": "asan tapın",
+    "tabsLabel": "Axtarış üsulu",
+    "tabs": {
+      "byVehicle": "Avtomobilə görə",
+      "byPartName": "Hissənin adına görə",
+      "byOem": "OEM nömrəsinə görə",
+      "byVin": "VIN ilə"
+    },
+    "partNamePlaceholder": "Məsələn: əyləc diski, yağ filtri",
+    "oemPlaceholder": "Məsələn: 34116855152",
+    "search": "Axtar",
+    "stats": {
+      "makes": "{{count}} marka",
+      "makesFallback": "Əsas markalar",
+      "makesBody": "Avtomobil markası",
+      "categories": "{{count}} kateqoriya",
+      "categoriesFallback": "Kateqoriyalar",
+      "categoriesBody": "Ehtiyat hissəsi kateqoriyası",
+      "coverage": "Bütün Azərbaycan",
+      "coverageBody": "üzrə elanlar",
+      "contact": "Birbaşa əlaqə",
+      "contactBody": "Satıcı ilə WhatsApp və ya zəng"
+    }
   },
   "howItWorks": {
     "title": "Necə işləyir",
@@ -31,7 +56,9 @@
     "signOut": "Çıxış",
     "mySellerPanel": "Elanlarım",
     "becomeSeller": "Satıcı ol",
-    "admin": "Admin"
+    "admin": "Admin",
+    "postListing": "Elan yerləşdir",
+    "postListingShort": "Elan"
   },
   "actions": {
     "pingApi": "API yoxla",

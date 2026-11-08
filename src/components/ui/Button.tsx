@@ -8,6 +8,7 @@ const buttonStyles = cva(
     variants: {
       variant: {
         primary: 'bg-slate-900 text-white hover:bg-slate-800 focus-visible:ring-slate-900',
+        brand: 'bg-brand text-white hover:bg-brand-dark focus-visible:ring-brand',
         secondary:
           'bg-white text-slate-900 border border-slate-300 hover:bg-slate-50 focus-visible:ring-slate-500',
         ghost: 'bg-transparent text-slate-900 hover:bg-slate-100',
