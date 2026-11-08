@@ -3,9 +3,34 @@
   "tagline": "Auto parts marketplace for Azerbaijan",
   "hero": {
     "title": "Genuine auto parts for your car",
-    "subtitle": "Pick your vehicle, browse a category, or search by part number",
+    "subtitle": "Listings, sellers and every major car make in one place",
     "pickerEyebrow": "Find parts for your vehicle",
-    "browseCategoriesLink": "or browse categories ↓"
+    "browseCategoriesLink": "or browse categories ↓",
+    "titleLead": "Find the right",
+    "titleHighlight": "spare part",
+    "titleTail": "for your car, fast",
+    "tabsLabel": "Search method",
+    "tabs": {
+      "byVehicle": "By vehicle",
+      "byPartName": "By part name",
+      "byOem": "By OEM number",
+      "byVin": "By VIN"
+    },
+    "partNamePlaceholder": "e.g. brake disc, oil filter",
+    "oemPlaceholder": "e.g. 34116855152",
+    "search": "Search",
+    "stats": {
+      "makes": "{{count}} makes",
+      "makesFallback": "Major makes",
+      "makesBody": "Car makes in the catalog",
+      "categories": "{{count}} categories",
+      "categoriesFallback": "Categories",
+      "categoriesBody": "Part categories",
+      "coverage": "All of Azerbaijan",
+      "coverageBody": "Listings nationwide",
+      "contact": "Direct contact",
+      "contactBody": "WhatsApp or call the seller"
+    }
   },
   "howItWorks": {
     "title": "How it works",
@@ -31,7 +56,9 @@
     "signOut": "Sign out",
     "mySellerPanel": "My listings",
     "becomeSeller": "Become a seller",
-    "admin": "Admin"
+    "admin": "Admin",
+    "postListing": "Post a listing",
+    "postListingShort": "Post"
   },
   "actions": {
     "pingApi": "Ping API",

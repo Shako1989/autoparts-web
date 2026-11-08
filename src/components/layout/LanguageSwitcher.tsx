@@ -12,7 +12,7 @@ export function LanguageSwitcher(): ReactElement {
     <label className="inline-flex items-center gap-2 text-sm">
       <Globe className="h-4 w-4" aria-hidden />
       <select
-        className="bg-transparent border border-slate-300 rounded px-2 py-1"
+        className="rounded border border-navy-line bg-transparent px-2 py-1 text-white [&>option]:text-slate-900"
         value={current}
         onChange={(e) => void i18n.changeLanguage(e.target.value)}
         aria-label="Language"
