@@ -145,7 +145,11 @@ function VehiclePickerInner({
   return (
     <div className={compact ? '' : 'rounded-lg border border-slate-200 bg-white p-4 shadow-sm'}>
       {!compact && <h2 className="text-lg font-semibold mb-3">{t('catalog.vehiclePicker.title')}</h2>}
-      <div className={`grid grid-cols-1 gap-3 ${showGenerationStep ? 'sm:grid-cols-4' : 'sm:grid-cols-3'}`}>
+      <div
+        className={`grid grid-cols-1 gap-3 ${
+          showGenerationStep ? 'sm:grid-cols-[1fr_1fr_1fr_1fr_auto]' : 'sm:grid-cols-[1fr_1fr_1fr_auto]'
+        }`}
+      >
         <SelectField
           label={t('catalog.vehiclePicker.selectMake')}
           value={makeSlug}
@@ -182,11 +186,11 @@ function VehiclePickerInner({
           loading={yearsQ.isFetching && !!activeGenerationId}
           options={(yearsQ.data ?? []).map((y) => ({ value: String(y), label: String(y) }))}
         />
-      </div>
-      <div className="mt-3 flex justify-end">
-        <Button onClick={submit} disabled={!canSubmit}>
-          {t('catalog.vehiclePicker.find')}
-        </Button>
+        <div className="flex items-end">
+          <Button onClick={submit} disabled={!canSubmit} className="w-full sm:w-auto">
+            {t('catalog.vehiclePicker.find')}
+          </Button>
+        </div>
       </div>
       <VinLookup onMakeResolved={onMake} {...(onPicked ? { onPicked } : {})} />
     </div>
