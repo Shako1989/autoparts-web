@@ -2,8 +2,25 @@
   "appName": "AutoParts.az",
   "tagline": "Avtomobil ehtiyat hissələri marketpleysi",
   "hero": {
-    "title": "Maşınınız üçün ehtiyat hissəsi tapın",
-    "subtitle": "Ad, OEM nömrəsi və ya avtomobil markası ilə axtarın"
+    "title": "Öz avtomobiliniz üçün orijinal ehtiyat hissələri",
+    "subtitle": "Maşınınızı seçin, kateqoriyaya baxın və ya hissə nömrəsi ilə axtarın",
+    "pickerEyebrow": "Maşınınızı seçin",
+    "browseCategoriesLink": "və ya kateqoriyalara baxın ↓"
+  },
+  "howItWorks": {
+    "title": "Necə işləyir",
+    "step1": {
+      "title": "Maşınınızı və ya kateqoriyanı seçin",
+      "body": "Marka, model və ilə görə uyğun hissələri tapın"
+    },
+    "step2": {
+      "title": "Satıcıları müqayisə edin",
+      "body": "Şəhər, qiymət və vəziyyətə görə elanlara baxın"
+    },
+    "step3": {
+      "title": "Birbaşa satıcı ilə əlaqə saxlayın",
+      "body": "WhatsApp və ya zəng ilə — sifariş platformadan kənarda razılaşdırılır"
+    }
   },
   "nav": {
     "search": "Axtarış",
@@ -35,6 +52,9 @@
     "popularMakes": "Populyar markalar",
     "filteredBy": "Filtr",
     "categories": "Kateqoriyalar",
+    "browseByCategoryTitle": "Kateqoriyalara baxın",
+    "seeAllCategories": "Bütün kateqoriyalar →",
+    "subcategoryCount": "{{count}} altkateqoriya",
     "vehiclePicker": {
       "title": "Maşına görə tapın",
       "selectMake": "Marka seçin",
@@ -42,6 +62,31 @@
       "selectGeneration": "Nəsil seçin",
       "selectYear": "İl seçin",
       "find": "Tap"
+    },
+    "vin": {
+      "or": "və ya",
+      "title": "VIN ilə tapın",
+      "placeholder": "17 simvollu VIN, məs. 3FA6P0LU4KR123456",
+      "find": "Yoxla",
+      "hint": "ABŞ-dan gətirilən maşınlar üçün işləyir. VIN texpasportda və ön şüşənin altında yazılır.",
+      "errors": {
+        "invalid": "VIN 17 simvoldan ibarət olmalıdır. I, O və Q hərfləri VIN-də istifadə olunmur.",
+        "unavailable": "VIN dekoderi müvəqqəti əlçatan deyil. Bir az sonra yenidən cəhd edin.",
+        "failed": "VIN yoxlanıla bilmədi. Yenidən cəhd edin."
+      },
+      "ambiguous": "{{vehicle}}: bir neçə versiya uyğun gəlir, birini seçin.",
+      "modelOnly": "{{vehicle}} tanındı, amma bu il üçün kataloqda versiya hələ yoxdur.",
+      "makeOnly": "{{vehicle}} tanındı, amma bu model hələ kataloqda yoxdur. Marka seçildi, modeli yuxarıdan seçin.",
+      "notInCatalog": "{{vehicle}} tanındı, amma bu marka hələ kataloqda yoxdur.",
+      "notDecoded": "Bu VIN oxuna bilmədi. Adətən ABŞ-a satılmamış maşınlarda belə olur. Maşını yuxarıdan əl ilə seçin.",
+      "showParts": "Bu maşın üzrə hissələrə bax"
+    },
+    "fuel": {
+      "PETROL": "Benzin",
+      "DIESEL": "Dizel",
+      "HYBRID": "Hibrid",
+      "EV": "Elektrik",
+      "LPG": "Qaz"
     },
     "category": {
       "subcategories": "Alt kateqoriyalar",
@@ -82,6 +127,9 @@
     "devFetchOtp": "Dev kodu götür"
   },
   "seller": {
+    "homeCtaTitle": "Satmaq üçün ehtiyat hissəniz var?",
+    "homeCtaBody": "Elanlarınızı yerləşdirin və Azərbaycan üzrə alıcılara çatın",
+    "homeCtaButton": "Satıcı olun",
     "onboardingTitle": "Satıcı ol",
     "onboardingHelper": "Alıcılara kimlə işlədiklərini göstərin.",
     "displayName": "Görünən ad",

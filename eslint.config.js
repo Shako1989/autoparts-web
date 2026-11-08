@@ -18,5 +18,11 @@ export default defineConfig([
     languageOptions: {
       globals: globals.browser,
     },
+    rules: {
+      // eslint-plugin-react-hooks 7 flags setState calls made synchronously
+      // inside an effect. The pickers do this to auto-select a sole option;
+      // keep the signal as a warning until those effects are refactored.
+      'react-hooks/set-state-in-effect': 'warn',
+    },
   },
 ])

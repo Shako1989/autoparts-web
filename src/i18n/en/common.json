@@ -2,8 +2,25 @@
   "appName": "AutoParts.az",
   "tagline": "Auto parts marketplace for Azerbaijan",
   "hero": {
-    "title": "Find the right part for your car",
-    "subtitle": "Search by name, OEM number, or car make"
+    "title": "Genuine auto parts for your car",
+    "subtitle": "Pick your vehicle, browse a category, or search by part number",
+    "pickerEyebrow": "Find parts for your vehicle",
+    "browseCategoriesLink": "or browse categories ↓"
+  },
+  "howItWorks": {
+    "title": "How it works",
+    "step1": {
+      "title": "Pick your vehicle or category",
+      "body": "Find matching parts by make, model, and year"
+    },
+    "step2": {
+      "title": "Compare sellers",
+      "body": "Browse listings by city, price, and condition"
+    },
+    "step3": {
+      "title": "Contact the seller directly",
+      "body": "By WhatsApp or call — the order is arranged off-platform"
+    }
   },
   "nav": {
     "search": "Search",
@@ -35,6 +52,9 @@
     "popularMakes": "Popular makes",
     "filteredBy": "Filtered by",
     "categories": "Categories",
+    "browseByCategoryTitle": "Browse by category",
+    "seeAllCategories": "See all categories →",
+    "subcategoryCount": "{{count}} subcategories",
     "vehiclePicker": {
       "title": "Find by car",
       "selectMake": "Make",
@@ -42,6 +62,31 @@
       "selectGeneration": "Select generation",
       "selectYear": "Year",
       "find": "Find"
+    },
+    "vin": {
+      "or": "or",
+      "title": "Find by VIN",
+      "placeholder": "17-character VIN, e.g. 3FA6P0LU4KR123456",
+      "find": "Look up",
+      "hint": "Works for cars imported from the US. The VIN is on the registration and under the windscreen.",
+      "errors": {
+        "invalid": "A VIN has 17 characters. The letters I, O and Q are never used.",
+        "unavailable": "The VIN decoder is temporarily unavailable. Please try again shortly.",
+        "failed": "The VIN could not be checked. Please try again."
+      },
+      "ambiguous": "{{vehicle}}: several versions match, pick one.",
+      "modelOnly": "{{vehicle}} recognised, but the catalog has no versions for that year yet.",
+      "makeOnly": "{{vehicle}} recognised, but this model is not in the catalog yet. The make is preselected, choose the model above.",
+      "notInCatalog": "{{vehicle}} recognised, but this make is not in the catalog yet.",
+      "notDecoded": "This VIN could not be decoded. That usually means the car was never sold in the US. Pick the car manually above.",
+      "showParts": "Browse parts for this car"
+    },
+    "fuel": {
+      "PETROL": "Petrol",
+      "DIESEL": "Diesel",
+      "HYBRID": "Hybrid",
+      "EV": "Electric",
+      "LPG": "LPG"
     },
     "category": {
       "subcategories": "Subcategories",
@@ -82,6 +127,9 @@
     "devFetchOtp": "Fetch dev code"
   },
   "seller": {
+    "homeCtaTitle": "Have parts to sell?",
+    "homeCtaBody": "List your inventory and reach buyers across Azerbaijan",
+    "homeCtaButton": "Become a seller",
     "onboardingTitle": "Become a seller",
     "onboardingHelper": "Tell buyers who they're dealing with.",
     "displayName": "Display name",
