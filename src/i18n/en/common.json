@@ -63,6 +63,31 @@
       "selectYear": "Year",
       "find": "Find"
     },
+    "vin": {
+      "or": "or",
+      "title": "Find by VIN",
+      "placeholder": "17-character VIN, e.g. 3FA6P0LU4KR123456",
+      "find": "Look up",
+      "hint": "Works for cars imported from the US. The VIN is on the registration and under the windscreen.",
+      "errors": {
+        "invalid": "A VIN has 17 characters. The letters I, O and Q are never used.",
+        "unavailable": "The VIN decoder is temporarily unavailable. Please try again shortly.",
+        "failed": "The VIN could not be checked. Please try again."
+      },
+      "ambiguous": "{{vehicle}}: several versions match, pick one.",
+      "modelOnly": "{{vehicle}} recognised, but the catalog has no versions for that year yet.",
+      "makeOnly": "{{vehicle}} recognised, but this model is not in the catalog yet. The make is preselected, choose the model above.",
+      "notInCatalog": "{{vehicle}} recognised, but this make is not in the catalog yet.",
+      "notDecoded": "This VIN could not be decoded. That usually means the car was never sold in the US. Pick the car manually above.",
+      "showParts": "Browse parts for this car"
+    },
+    "fuel": {
+      "PETROL": "Petrol",
+      "DIESEL": "Diesel",
+      "HYBRID": "Hybrid",
+      "EV": "Electric",
+      "LPG": "LPG"
+    },
     "category": {
       "subcategories": "Subcategories",
       "partsHeading": "Parts in this category",

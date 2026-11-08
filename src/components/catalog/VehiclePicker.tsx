@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
 import { useGenerations, useMakes, useModels, useYearsByGeneration } from '@/api/catalog';
+import { VinLookup } from '@/components/catalog/VinLookup';
 import { Button } from '@/components/ui/Button';
 import { useGarageStore } from '@/store/garageStore';
 
@@ -187,6 +188,7 @@ function VehiclePickerInner({
           {t('catalog.vehiclePicker.find')}
         </Button>
       </div>
+      <VinLookup onMakeResolved={onMake} {...(onPicked ? { onPicked } : {})} />
     </div>
   );
 }

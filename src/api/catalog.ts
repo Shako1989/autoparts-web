@@ -1,4 +1,4 @@
-import { useQuery, type UseQueryOptions } from '@tanstack/react-query';
+import { useMutation, useQuery, type UseQueryOptions } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { apiClient } from './client';
 
@@ -36,6 +36,7 @@ export interface VehicleGeneration {
 
 export interface VehicleVariant {
   id: string;
+  generationId?: string;
   modelId: string;
   year: number;
   trim: string | null;
@@ -140,6 +141,59 @@ export interface Diagram {
   categoryId: string | null;
   vehicleVariantId: string | null;
   callouts: DiagramCallout[];
+}
+
+// VIN lookup (GET /v1/catalog/vin/{vin}); see ARCHITECTURE.md §6b.
+
+export type VinMatchStatus =
+  | 'EXACT'
+  | 'AMBIGUOUS'
+  | 'MODEL_ONLY'
+  | 'MAKE_ONLY'
+  | 'NOT_IN_CATALOG'
+  | 'NOT_DECODED';
+
+export interface VinDecodedEngine {
+  displacementL: number | null;
+  cylinders: number | null;
+  horsepower: number | null;
+  engineModel: string | null;
+  fuelPrimary: string | null;
+  fuelSecondary: string | null;
+  electrificationLevel: string | null;
+}
+
+/** What NHTSA vPIC knows about the car. Every field may be null. */
+export interface VinDecodedVehicle {
+  make: string | null;
+  model: string | null;
+  year: number | null;
+  series: string | null;
+  trim: string | null;
+  bodyClass: string | null;
+  vehicleType: string | null;
+  driveType: string | null;
+  engine: VinDecodedEngine;
+  plantCountry: string | null;
+  errorCode: string | null;
+  errorText: string | null;
+}
+
+/** What could be mapped onto our own catalog rows. */
+export interface VinCatalogMatch {
+  make: VehicleMake | null;
+  model: VehicleModel | null;
+  generation: VehicleGeneration | null;
+  variants: VehicleVariant[];
+  fuel: FuelType | null;
+  bodyType: string | null;
+}
+
+export interface VinLookupResponse {
+  vin: string;
+  status: VinMatchStatus;
+  decoded: VinDecodedVehicle;
+  match: VinCatalogMatch;
 }
 
 // ---------- query keys ----------
@@ -340,4 +394,14 @@ export function useCategoryDiagrams(
     enabled: !!slug,
     ...longStale,
   });
+}
+
+export async function lookupVin(vin: string, year?: number): Promise<VinLookupResponse> {
+  const base = `/v1/catalog/vin/${encodeURIComponent(vin)}`;
+  return get<VinLookupResponse>(year ? `${base}?year=${year}` : base);
+}
+
+/** Imperative VIN lookup for a submit button; the server caches decodes, so no client cache is kept. */
+export function useVinLookup() {
+  return useMutation({ mutationFn: (vin: string) => lookupVin(vin) });
 }
