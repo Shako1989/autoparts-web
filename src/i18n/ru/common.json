@@ -61,7 +61,8 @@
       "selectModel": "Модель",
       "selectGeneration": "Выберите поколение",
       "selectYear": "Год",
-      "find": "Найти"
+      "find": "Найти",
+      "generationLabel": "Поколение: {{generation}}"
     },
     "vin": {
       "or": "или",

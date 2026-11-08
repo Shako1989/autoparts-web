@@ -61,7 +61,8 @@
       "selectModel": "Model seçin",
       "selectGeneration": "Nəsil seçin",
       "selectYear": "İl seçin",
-      "find": "Tap"
+      "find": "Tap",
+      "generationLabel": "Nəsil: {{generation}}"
     },
     "vin": {
       "or": "və ya",

@@ -70,6 +70,9 @@ function VehiclePickerInner({
   }, [generationsQ.data]);
 
   const showGenerationStep = (generationsQ.data ?? []).length > 1;
+  // A single generation is auto-selected above; name it so the user still
+  // sees which chassis they are on without an extra dropdown.
+  const soleGeneration = generationsQ.data?.length === 1 ? generationsQ.data[0] : undefined;
 
   const activeGenerationId = generationId || undefined;
 
@@ -192,6 +195,18 @@ function VehiclePickerInner({
           </Button>
         </div>
       </div>
+      {soleGeneration && modelId && (
+        <p className="mt-2 text-xs text-slate-500">
+          {t('catalog.vehiclePicker.generationLabel', {
+            generation: formatGenerationLabel(
+              soleGeneration.code,
+              soleGeneration.name,
+              soleGeneration.yearFrom,
+              soleGeneration.yearTo,
+            ),
+          })}
+        </p>
+      )}
       <VinLookup onMakeResolved={onMake} {...(onPicked ? { onPicked } : {})} />
     </div>
   );

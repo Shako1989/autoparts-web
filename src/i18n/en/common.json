@@ -61,7 +61,8 @@
       "selectModel": "Model",
       "selectGeneration": "Select generation",
       "selectYear": "Year",
-      "find": "Find"
+      "find": "Find",
+      "generationLabel": "Generation: {{generation}}"
     },
     "vin": {
       "or": "or",
