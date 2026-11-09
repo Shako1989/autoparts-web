@@ -89,7 +89,10 @@
       "selectGeneration": "Select generation",
       "selectYear": "Year",
       "find": "Find",
-      "generationLabel": "Generation: {{generation}}"
+      "generationLabel": "Generation: {{generation}}",
+      "selectTrim": "Trim",
+      "selectEngine": "Engine",
+      "any": "Any"
     },
     "vin": {
       "or": "or",

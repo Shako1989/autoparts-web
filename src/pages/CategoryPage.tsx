@@ -20,16 +20,14 @@ export default function CategoryPage(): ReactElement {
   const { data, isLoading, isError } = useCategory(slug);
   const activeVehicle = useActiveVehicle();
   const clearActive = useGarageStore((s) => s.clearActive);
-  const partsQ = usePartsInCategory(slug, 0, 20, {
+  const vehicleFilter = {
     makeSlug: activeVehicle?.makeSlug,
     modelSlug: activeVehicle?.modelSlug,
     year: activeVehicle?.year,
-  });
-  const diagramsQ = useCategoryDiagrams(slug, {
-    makeSlug: activeVehicle?.makeSlug,
-    modelSlug: activeVehicle?.modelSlug,
-    year: activeVehicle?.year,
-  });
+    variantId: activeVehicle?.vehicleVariantId,
+  };
+  const partsQ = usePartsInCategory(slug, 0, 20, vehicleFilter);
+  const diagramsQ = useCategoryDiagrams(slug, vehicleFilter);
 
   if (isLoading) return <Page>{t('catalog.loading')}</Page>;
   if (isError || !data) return <Page>{t('catalog.empty')}</Page>;

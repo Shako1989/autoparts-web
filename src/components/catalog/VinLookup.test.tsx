@@ -2,7 +2,7 @@ import '@testing-library/jest-dom/vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { AxiosError, type AxiosResponse } from 'axios';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Route, Routes, useLocation } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import type { VinLookupResponse } from '@/api/catalog';
@@ -86,6 +86,11 @@ function response(overrides: Partial<VinLookupResponse>): VinLookupResponse {
   };
 }
 
+function LocationProbe() {
+  const loc = useLocation();
+  return <div data-testid="location">{loc.pathname + loc.search}</div>;
+}
+
 function ok(data: VinLookupResponse): AxiosResponse<VinLookupResponse> {
   return { data, status: 200, statusText: 'OK', headers: {}, config: {} as never };
 }
@@ -97,7 +102,15 @@ function renderVin(props: Parameters<typeof VinLookup>[0] = {}) {
       <MemoryRouter initialEntries={['/']}>
         <Routes>
           <Route path="/" element={<VinLookup {...props} />} />
-          <Route path="/v/:makeSlug/:modelSlug/:year" element={<div>vehicle page</div>} />
+          <Route
+            path="/v/:makeSlug/:modelSlug/:year"
+            element={
+              <>
+                <div>vehicle page</div>
+                <LocationProbe />
+              </>
+            }
+          />
         </Routes>
       </MemoryRouter>
     </QueryClientProvider>,
@@ -131,8 +144,10 @@ describe('VinLookup', () => {
     expect(get).toHaveBeenCalledWith('/v1/catalog/vin/3FA6P0LU4KR123456');
     const garage = useGarageStore.getState();
     expect(garage.vehicles).toHaveLength(1);
-    expect(garage.vehicles[0]?.label).toBe('Ford Fusion 2019 SE Hybrid');
-    expect(garage.activeVariantId).toBe('ford-fusion-gen-2019');
+    expect(garage.vehicles[0]?.label).toBe('Ford Fusion 2019 SE Hybrid 2.0 Atkinson HEV');
+    expect(garage.vehicles[0]?.vehicleVariantId).toBe('v-hybrid');
+    expect(garage.activeVariantId).toBe('ford-fusion-gen-2019-v-hybrid');
+    expect(screen.getByTestId('location')).toHaveTextContent('/v/ford/fusion/2019?variant=v-hybrid');
   });
 
   it('lists the candidates when ambiguous and navigates once one is picked', async () => {
@@ -162,7 +177,8 @@ describe('VinLookup', () => {
     fireEvent.click(titanium);
 
     expect(await screen.findByText('vehicle page')).toBeInTheDocument();
-    expect(useGarageStore.getState().vehicles[0]?.label).toBe('Ford Fusion 2019 Titanium');
+    expect(useGarageStore.getState().vehicles[0]?.label).toBe('Ford Fusion 2019 Titanium 2.0 EcoBoost');
+    expect(useGarageStore.getState().activeVariantId).toBe('ford-fusion-gen-2019-v-titanium');
   });
 
   it('rejects a malformed VIN locally without calling the API', () => {

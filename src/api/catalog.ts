@@ -205,23 +205,27 @@ const KEY = {
   generations: (modelId: string) => ['catalog', 'generations', modelId] as const,
   yearsByGeneration: (generationId: string) => ['catalog', 'yearsByGeneration', generationId] as const,
   variants: (modelId: string, year: number) => ['catalog', 'variants', modelId, year] as const,
+  variantsByGeneration: (generationId: string, year: number) =>
+    ['catalog', 'variantsByGeneration', generationId, year] as const,
   tree: (lang: string) => ['catalog', 'tree', lang] as const,
   category: (slug: string, lang: string) => ['catalog', 'category', slug, lang] as const,
   partsInCategory: (
     slug: string, page: number, size: number, lang: string,
     makeSlug?: string | null, modelSlug?: string | null, year?: number | null,
+    variantId?: string | null,
   ) =>
     ['catalog', 'category', slug, 'parts', page, size, lang,
-     makeSlug ?? null, modelSlug ?? null, year ?? null] as const,
+     makeSlug ?? null, modelSlug ?? null, year ?? null, variantId ?? null] as const,
   part: (id: string, lang: string) => ['catalog', 'part', id, lang] as const,
   fitments: (partId: string) => ['catalog', 'fitments', partId] as const,
   diagram: (slug: string, lang: string) => ['catalog', 'diagram', slug, lang] as const,
   categoryDiagrams: (
     slug: string, lang: string,
     makeSlug?: string | null, modelSlug?: string | null, year?: number | null,
+    variantId?: string | null,
   ) =>
     ['catalog', 'category', slug, 'diagrams', lang,
-     makeSlug ?? null, modelSlug ?? null, year ?? null] as const,
+     makeSlug ?? null, modelSlug ?? null, year ?? null, variantId ?? null] as const,
 };
 
 // ---------- raw fetchers ----------
@@ -287,6 +291,34 @@ export function useVariants(
   });
 }
 
+/** Variants (trim + engine) of one generation in one model year; what the picker's Trim/Engine selects are built from. */
+export function useVariantsByGeneration(
+  generationId: string | undefined,
+  year: number | undefined,
+): ReturnType<typeof useQuery<VehicleVariant[]>> {
+  return useQuery({
+    queryKey: KEY.variantsByGeneration(generationId ?? '', year ?? -1),
+    queryFn: () => get<VehicleVariant[]>(`/v1/catalog/variants?generation=${generationId}&year=${year}`),
+    enabled: !!generationId && year !== undefined,
+    ...longStale,
+  });
+}
+
+/** Vehicle filter for category parts/diagrams. `variantId` (exact version) wins over make/model/year on the server. */
+export interface VehicleFilter {
+  makeSlug?: string | null;
+  modelSlug?: string | null;
+  year?: number | null;
+  variantId?: string | null;
+}
+
+function vehicleFilterParams(filter: VehicleFilter | undefined, params: URLSearchParams): void {
+  if (filter?.makeSlug) params.set('make', filter.makeSlug);
+  if (filter?.modelSlug) params.set('model', filter.modelSlug);
+  if (filter?.year !== null && filter?.year !== undefined) params.set('year', String(filter.year));
+  if (filter?.variantId) params.set('variant', filter.variantId);
+}
+
 export function useCategoryTree(): ReturnType<typeof useQuery<CategoryNode[]>> {
   const { i18n } = useTranslation();
   const lang = i18n.resolvedLanguage ?? 'az';
@@ -312,22 +344,21 @@ export function usePartsInCategory(
   slug: string | undefined,
   page = 0,
   size = 20,
-  filter?: { makeSlug?: string | null; modelSlug?: string | null; year?: number | null },
+  filter?: VehicleFilter,
 ): ReturnType<typeof useQuery<PageResponse<PartListItem>>> {
   const { i18n } = useTranslation();
   const lang = i18n.resolvedLanguage ?? 'az';
   const mk = filter?.makeSlug ?? null;
   const m = filter?.modelSlug ?? null;
   const y = filter?.year ?? null;
+  const v = filter?.variantId ?? null;
   return useQuery({
-    queryKey: KEY.partsInCategory(slug ?? '', page, size, lang, mk, m, y),
+    queryKey: KEY.partsInCategory(slug ?? '', page, size, lang, mk, m, y, v),
     queryFn: () => {
       const params = new URLSearchParams();
       params.set('page', String(page));
       params.set('size', String(size));
-      if (mk) params.set('make', mk);
-      if (m) params.set('model', m);
-      if (y !== null && y !== undefined) params.set('year', String(y));
+      vehicleFilterParams(filter, params);
       return get<PageResponse<PartListItem>>(`/v1/catalog/categories/${slug}/parts?${params}`);
     },
     enabled: !!slug,
@@ -372,20 +403,19 @@ export function useDiagram(slug: string | undefined): ReturnType<typeof useQuery
 
 export function useCategoryDiagrams(
   slug: string | undefined,
-  filter?: { makeSlug?: string | null; modelSlug?: string | null; year?: number | null },
+  filter?: VehicleFilter,
 ): ReturnType<typeof useQuery<Diagram[]>> {
   const { i18n } = useTranslation();
   const lang = i18n.resolvedLanguage ?? 'az';
   const mk = filter?.makeSlug ?? null;
   const m = filter?.modelSlug ?? null;
   const y = filter?.year ?? null;
+  const v = filter?.variantId ?? null;
   return useQuery({
-    queryKey: KEY.categoryDiagrams(slug ?? '', lang, mk, m, y),
+    queryKey: KEY.categoryDiagrams(slug ?? '', lang, mk, m, y, v),
     queryFn: () => {
       const params = new URLSearchParams();
-      if (mk) params.set('make', mk);
-      if (m) params.set('model', m);
-      if (y !== null && y !== undefined) params.set('year', String(y));
+      vehicleFilterParams(filter, params);
       const path = params.toString()
         ? `/v1/catalog/categories/${slug}/diagrams?${params}`
         : `/v1/catalog/categories/${slug}/diagrams`;
