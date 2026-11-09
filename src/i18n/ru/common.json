@@ -92,7 +92,9 @@
       "generationLabel": "Поколение: {{generation}}",
       "selectTrim": "Комплектация",
       "selectEngine": "Двигатель",
-      "any": "Все"
+      "any": "Все",
+      "anyTrim": "Любая комплектация",
+      "anyEngine": "Любой двигатель"
     },
     "vin": {
       "or": "или",

@@ -92,7 +92,9 @@
       "generationLabel": "Nəsil: {{generation}}",
       "selectTrim": "Komplektasiya seçin",
       "selectEngine": "Mühərrik seçin",
-      "any": "Hamısı"
+      "any": "Hamısı",
+      "anyTrim": "Bütün komplektasiyalar",
+      "anyEngine": "Bütün mühərriklər"
     },
     "vin": {
       "or": "və ya",

@@ -13,6 +13,7 @@ import type { SearchHit } from '@/api/search';
 import { PartPicker } from '@/components/seller/PartPicker';
 import { PhotoUploader } from '@/components/seller/PhotoUploader';
 import { FitmentPicker } from '@/components/seller/FitmentPicker';
+import { toFitmentInput } from '@/lib/fitments';
 import type { FitmentInput } from '@/api/listings';
 
 interface Props {
@@ -103,7 +104,7 @@ export default function ListingEditorPage({ mode }: Props): ReactElement {
           currency,
           quantity,
           city: city || undefined,
-          fitments: fitments.map(({ makeSlug, modelSlug, year }) => ({ makeSlug, modelSlug, year })),
+          fitments: fitments.map(toFitmentInput),
         });
         navigate(`/sell/listings/${created.id}`, { replace: true });
         return;

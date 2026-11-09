@@ -92,7 +92,9 @@
       "generationLabel": "Generation: {{generation}}",
       "selectTrim": "Trim",
       "selectEngine": "Engine",
-      "any": "Any"
+      "any": "Any",
+      "anyTrim": "Any trim",
+      "anyEngine": "Any engine"
     },
     "vin": {
       "or": "or",
