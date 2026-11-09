@@ -5,14 +5,15 @@ import { useNavigate } from 'react-router-dom';
 
 import { useVinLookup, type VehicleVariant, type VinLookupResponse } from '@/api/catalog';
 import { Button } from '@/components/ui/Button';
+import { vehiclePagePath, type PickedVehicle } from '@/lib/vehiclePath';
 import { isValidVin, normalizeVin } from '@/lib/vin';
-import { useGarageStore } from '@/store/garageStore';
+import { garageVehicleKey, garageVehicleLabel, useGarageStore } from '@/store/garageStore';
 
 interface VinLookupProps {
   /** Called when only the make matched, so a surrounding picker can preselect it. */
   onMakeResolved?: (makeSlug: string) => void;
   /** When provided, replaces the navigation to /v/... once a vehicle is resolved. */
-  onPicked?: (vehicle: { makeSlug: string; modelSlug: string; year: number }) => void;
+  onPicked?: (vehicle: PickedVehicle) => void;
 }
 
 type ErrorKind = 'invalid' | 'unavailable' | 'failed';
@@ -38,26 +39,39 @@ export function VinLookup({ onMakeResolved, onPicked }: VinLookupProps): ReactEl
     const year = r.decoded.year;
     if (!make || !model || !year) return;
 
-    const variantId = generation
-      ? `${make.slug}-${model.slug}-${generation.slug}-${year}`
-      : `${make.slug}-${model.slug}-${year}`;
-    const label = [make.name, model.name, generation?.code, year, variant?.trim]
-      .filter((part) => part !== null && part !== undefined && part !== '')
-      .join(' ');
-
     addVehicle({
-      variantId,
+      variantId: garageVehicleKey({
+        makeSlug: make.slug,
+        modelSlug: model.slug,
+        generationSlug: generation?.slug,
+        year,
+        vehicleVariantId: variant?.id,
+      }),
       makeSlug: make.slug,
       modelSlug: model.slug,
       year,
-      label,
+      label: garageVehicleLabel({
+        makeName: make.name,
+        modelName: model.name,
+        generationCode: generation?.code,
+        year,
+        trim: variant?.trim,
+        engineCode: variant?.engineCode,
+      }),
       ...(generation ? { generationSlug: generation.slug, generationCode: generation.code } : {}),
+      ...(variant ? { vehicleVariantId: variant.id, trim: variant.trim, engineCode: variant.engineCode } : {}),
     });
 
+    const picked: PickedVehicle = {
+      makeSlug: make.slug,
+      modelSlug: model.slug,
+      year,
+      ...(variant ? { vehicleVariantId: variant.id } : {}),
+    };
     if (onPicked) {
-      onPicked({ makeSlug: make.slug, modelSlug: model.slug, year });
+      onPicked(picked);
     } else {
-      navigate(`/v/${make.slug}/${model.slug}/${year}`);
+      navigate(vehiclePagePath(picked));
     }
   }
 

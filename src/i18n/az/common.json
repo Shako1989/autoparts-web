@@ -89,7 +89,10 @@
       "selectGeneration": "Nəsil seçin",
       "selectYear": "İl seçin",
       "find": "Tap",
-      "generationLabel": "Nəsil: {{generation}}"
+      "generationLabel": "Nəsil: {{generation}}",
+      "selectTrim": "Komplektasiya seçin",
+      "selectEngine": "Mühərrik seçin",
+      "any": "Hamısı"
     },
     "vin": {
       "or": "və ya",

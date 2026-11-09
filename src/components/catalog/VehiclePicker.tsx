@@ -2,10 +2,18 @@ import { useEffect, useMemo, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router-dom';
 
-import { useGenerations, useMakes, useModels, useYearsByGeneration } from '@/api/catalog';
+import {
+  useGenerations,
+  useMakes,
+  useModels,
+  useVariantsByGeneration,
+  useYearsByGeneration,
+  type VehicleVariant,
+} from '@/api/catalog';
 import { VinLookup } from '@/components/catalog/VinLookup';
 import { Button } from '@/components/ui/Button';
-import { useGarageStore } from '@/store/garageStore';
+import { vehiclePagePath, type PickedVehicle } from '@/lib/vehiclePath';
+import { garageVehicleKey, garageVehicleLabel, useGarageStore } from '@/store/garageStore';
 
 interface VehiclePickerProps {
   presetMakeSlug?: string;
@@ -17,7 +25,7 @@ interface VehiclePickerProps {
    * Called after the picked vehicle is added to the garage and set active.
    * When provided, the picker does NOT navigate to /v/... — caller controls.
    */
-  onPicked?: (vehicle: { makeSlug: string; modelSlug: string; year: number }) => void;
+  onPicked?: (vehicle: PickedVehicle) => void;
 }
 
 /**
@@ -39,6 +47,36 @@ function formatGenerationLabel(
   return `${display} (${range})`;
 }
 
+/** Non-empty values in first-seen order. */
+function distinct(values: (string | null)[]): string[] {
+  const out: string[] = [];
+  for (const value of values) {
+    if (value && !out.includes(value)) out.push(value);
+  }
+  return out;
+}
+
+/**
+ * Trim and engine narrow each other: the trim list only shows trims sold with
+ * the chosen engine and vice versa. When exactly one variant is left it is the
+ * picked version, which is how a trim with a single engine fills the engine in
+ * by itself (and a year with a single variant needs no choice at all).
+ */
+function narrowVariants(
+  all: VehicleVariant[],
+  trim: string,
+  engine: string,
+): { trims: string[]; engines: string[]; resolved: VehicleVariant | undefined } {
+  const byTrim = (v: VehicleVariant): boolean => !trim || v.trim === trim;
+  const byEngine = (v: VehicleVariant): boolean => !engine || v.engineCode === engine;
+  const matching = all.filter((v) => byTrim(v) && byEngine(v));
+  return {
+    trims: distinct(all.filter(byEngine).map((v) => v.trim)),
+    engines: distinct(all.filter(byTrim).map((v) => v.engineCode)).sort((a, b) => a.localeCompare(b)),
+    resolved: matching.length === 1 ? matching[0] : undefined,
+  };
+}
+
 function VehiclePickerInner({
   presetMakeSlug,
   compact,
@@ -53,6 +91,8 @@ function VehiclePickerInner({
   const [modelSlug, setModelSlug] = useState<string>('');
   const [generationId, setGenerationId] = useState<string>('');
   const [year, setYear] = useState<number | undefined>(undefined);
+  const [trim, setTrim] = useState<string>('');
+  const [engine, setEngine] = useState<string>('');
 
   const makesQ = useMakes();
   const modelsQ = useModels(makeSlug || undefined);
@@ -87,26 +127,43 @@ function VehiclePickerInner({
     [generationsQ.data, generationId],
   );
 
+  const variantsQ = useVariantsByGeneration(activeGenerationId, year);
+  const narrowed = useMemo(
+    () => narrowVariants(variantsQ.data ?? [], trim, engine),
+    [variantsQ.data, trim, engine],
+  );
+  // What the selects show: the buyer's choice, or the value the sole remaining variant implies.
+  const trimValue = trim || narrowed.resolved?.trim || '';
+  const engineValue = engine || narrowed.resolved?.engineCode || '';
+
   function onMake(slug: string): void {
     setMakeSlug(slug);
     setModelSlug('');
     setGenerationId('');
     setYear(undefined);
+    setTrim('');
+    setEngine('');
   }
 
   function onModel(slug: string): void {
     setModelSlug(slug);
     setGenerationId('');
     setYear(undefined);
+    setTrim('');
+    setEngine('');
   }
 
   function onGeneration(id: string): void {
     setGenerationId(id);
     setYear(undefined);
+    setTrim('');
+    setEngine('');
   }
 
   function onYear(value: string): void {
     setYear(value ? Number(value) : undefined);
+    setTrim('');
+    setEngine('');
   }
 
   const canSubmit = !!(makeSlug && modelSlug && activeGenerationId && year);
@@ -118,42 +175,54 @@ function VehiclePickerInner({
       (makesQ.data ?? []).find((m) => m.slug === makeSlug)?.name ?? makeSlug;
     const modelName =
       (modelsQ.data ?? []).find((m) => m.slug === modelSlug)?.name ?? modelSlug;
-
-    const isMultiGen = showGenerationStep;
-    const generationSlug = isMultiGen ? selectedGeneration?.slug : undefined;
-    const generationCode = isMultiGen ? (selectedGeneration?.code ?? null) : undefined;
-
-    const variantId = isMultiGen && generationSlug
-      ? `${makeSlug}-${modelSlug}-${generationSlug}-${year}`
-      : `${makeSlug}-${modelSlug}-${year}`;
-
-    const label = isMultiGen && generationCode
-      ? `${makeName} ${modelName} ${generationCode} ${year}`.replace(/\s{2,}/g, ' ').trim()
-      : `${makeSlug} ${modelSlug} ${year}`;
+    const generation = selectedGeneration;
+    const variant = narrowed.resolved;
 
     addVehicle({
-      variantId,
+      variantId: garageVehicleKey({
+        makeSlug,
+        modelSlug,
+        generationSlug: generation?.slug,
+        year,
+        vehicleVariantId: variant?.id,
+      }),
       makeSlug,
       modelSlug,
       year,
-      label,
-      ...(generationSlug !== undefined ? { generationSlug } : {}),
-      ...(generationCode !== undefined ? { generationCode } : {}),
+      label: garageVehicleLabel({
+        makeName,
+        modelName,
+        generationCode: generation?.code,
+        year,
+        trim: variant?.trim,
+        engineCode: variant?.engineCode,
+      }),
+      ...(generation ? { generationSlug: generation.slug, generationCode: generation.code } : {}),
+      ...(variant ? { vehicleVariantId: variant.id, trim: variant.trim, engineCode: variant.engineCode } : {}),
     });
 
+    const picked: PickedVehicle = {
+      makeSlug,
+      modelSlug,
+      year,
+      ...(variant ? { vehicleVariantId: variant.id } : {}),
+    };
     if (onPicked) {
-      onPicked({ makeSlug, modelSlug, year });
+      onPicked(picked);
     } else {
-      navigate(`/v/${makeSlug}/${modelSlug}/${year}`);
+      navigate(vehiclePagePath(picked));
     }
   }
+
+  const versionsLoading = variantsQ.isFetching && !!year;
+  const anyLabel = t('catalog.vehiclePicker.any');
 
   return (
     <div className={compact ? '' : 'rounded-lg border border-slate-200 bg-white p-4 shadow-sm'}>
       {!compact && <h2 className="text-lg font-semibold mb-3">{t('catalog.vehiclePicker.title')}</h2>}
       <div
-        className={`grid grid-cols-1 gap-3 ${
-          showGenerationStep ? 'sm:grid-cols-[1fr_1fr_1fr_1fr_auto]' : 'sm:grid-cols-[1fr_1fr_1fr_auto]'
+        className={`grid grid-cols-1 gap-3 sm:grid-cols-2 ${
+          showGenerationStep ? 'lg:grid-cols-4' : 'lg:grid-cols-3'
         }`}
       >
         <SelectField
@@ -192,6 +261,27 @@ function VehiclePickerInner({
           loading={yearsQ.isFetching && !!activeGenerationId}
           options={(yearsQ.data ?? []).map((y) => ({ value: String(y), label: String(y) }))}
         />
+      </div>
+      {/* Optional refinement: Find works from the year alone, the exact version just makes the parts list precise. */}
+      <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_auto]">
+        <SelectField
+          label={t('catalog.vehiclePicker.selectTrim')}
+          value={trimValue}
+          onChange={setTrim}
+          disabled={!year || narrowed.trims.length === 0}
+          loading={versionsLoading}
+          placeholder={year && narrowed.trims.length > 0 ? anyLabel : undefined}
+          options={narrowed.trims.map((value) => ({ value, label: value }))}
+        />
+        <SelectField
+          label={t('catalog.vehiclePicker.selectEngine')}
+          value={engineValue}
+          onChange={setEngine}
+          disabled={!year || narrowed.engines.length === 0}
+          loading={versionsLoading}
+          placeholder={year && narrowed.engines.length > 0 ? anyLabel : undefined}
+          options={narrowed.engines.map((value) => ({ value, label: value }))}
+        />
         <div className="flex items-end">
           <Button variant="brand" onClick={submit} disabled={!canSubmit} className="h-11 w-full px-6 sm:w-auto">
             {t('catalog.vehiclePicker.find')}
@@ -222,9 +312,19 @@ interface SelectFieldProps {
   options: { value: string; label: string }[];
   disabled?: boolean;
   loading?: boolean;
+  /** Text of the empty option; defaults to a dash. */
+  placeholder?: string;
 }
 
-function SelectField({ label, value, onChange, options, disabled, loading }: SelectFieldProps): ReactElement {
+function SelectField({
+  label,
+  value,
+  onChange,
+  options,
+  disabled,
+  loading,
+  placeholder,
+}: SelectFieldProps): ReactElement {
   return (
     <label className="block text-sm">
       <span className="mb-1 block font-medium text-slate-700">{label}</span>
@@ -234,7 +334,7 @@ function SelectField({ label, value, onChange, options, disabled, loading }: Sel
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled || loading}
       >
-        <option value="">{loading ? '…' : '—'}</option>
+        <option value="">{loading ? '…' : (placeholder ?? '—')}</option>
         {options.map((opt) => (
           <option key={opt.value} value={opt.value}>
             {opt.label}

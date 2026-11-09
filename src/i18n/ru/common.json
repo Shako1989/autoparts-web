@@ -89,7 +89,10 @@
       "selectGeneration": "Выберите поколение",
       "selectYear": "Год",
       "find": "Найти",
-      "generationLabel": "Поколение: {{generation}}"
+      "generationLabel": "Поколение: {{generation}}",
+      "selectTrim": "Комплектация",
+      "selectEngine": "Двигатель",
+      "any": "Все"
     },
     "vin": {
       "or": "или",

@@ -2,16 +2,53 @@ import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
 export type GarageVehicle = {
+  /** Garage key, see {@link garageVehicleKey}. Not a catalog id. */
   variantId: string;
   makeSlug: string;
   modelSlug: string;
   year: number;
   label: string;
-  // Present when the model had multiple generations and the user picked one.
+  // Present when the generation is known (picked, or the model's only one).
   // Absent for legacy garage entries written before this change.
   generationSlug?: string;
   generationCode?: string | null;
+  /** Catalog `vehicle_variants.id` once the buyer narrowed to an exact trim + engine. */
+  vehicleVariantId?: string;
+  trim?: string | null;
+  engineCode?: string | null;
 };
+
+export interface GarageVehicleIdentity {
+  makeSlug: string;
+  modelSlug: string;
+  generationSlug?: string | null;
+  year: number;
+  vehicleVariantId?: string | null;
+}
+
+/**
+ * Stable key for a garage entry: `make-model[-generation]-year[-variantId]`.
+ * A model year and one of its exact versions are two different entries.
+ */
+export function garageVehicleKey(v: GarageVehicleIdentity): string {
+  return [v.makeSlug, v.modelSlug, v.generationSlug, v.year, v.vehicleVariantId]
+    .filter((part) => part !== null && part !== undefined && part !== '')
+    .join('-');
+}
+
+/** "Ford Fusion CD391 2017 SE 2.0 EcoBoost" from whichever parts are known. */
+export function garageVehicleLabel(parts: {
+  makeName: string;
+  modelName: string;
+  generationCode?: string | null;
+  year: number;
+  trim?: string | null;
+  engineCode?: string | null;
+}): string {
+  return [parts.makeName, parts.modelName, parts.generationCode, parts.year, parts.trim, parts.engineCode]
+    .filter((part) => part !== null && part !== undefined && part !== '')
+    .join(' ');
+}
 
 type GarageState = {
   vehicles: GarageVehicle[];
