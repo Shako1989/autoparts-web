@@ -72,10 +72,17 @@ export interface PartListingStats {
   currency: string | null;
 }
 
+/**
+ * One fitment rule: a model year, optionally narrowed to a generation, trim
+ * and/or engine. Omitted fields mean every variant of that model year.
+ */
 export interface FitmentInput {
   makeSlug: string;
   modelSlug: string;
   year: number;
+  generationSlug?: string;
+  trim?: string;
+  engineCode?: string;
 }
 
 export interface CreateListingRequest {

@@ -22,6 +22,7 @@ import {
 import type { FitmentInput } from '@/api/listings';
 import { LocalizedTextInput } from '@/components/admin/LocalizedTextInput';
 import { FitmentPicker } from '@/components/seller/FitmentPicker';
+import { toFitmentInput } from '@/lib/fitments';
 import { DiagramCanvas } from '@/components/admin/DiagramCanvas';
 
 interface Props {
@@ -294,7 +295,7 @@ function FitmentsTab({ partId }: { partId: string }): ReactElement {
     if (pending.length === 0) return;
     setError(null);
     try {
-      await add.mutateAsync(pending.map(({ makeSlug, modelSlug, year }) => ({ makeSlug, modelSlug, year })));
+      await add.mutateAsync(pending.map(toFitmentInput));
       setPending([]);
     } catch (err) {
       setError(extractError(err));

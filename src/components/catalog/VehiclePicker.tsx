@@ -8,10 +8,10 @@ import {
   useModels,
   useVariantsByGeneration,
   useYearsByGeneration,
-  type VehicleVariant,
 } from '@/api/catalog';
 import { VinLookup } from '@/components/catalog/VinLookup';
 import { Button } from '@/components/ui/Button';
+import { narrowVariants } from '@/lib/variants';
 import { vehiclePagePath, type PickedVehicle } from '@/lib/vehiclePath';
 import { garageVehicleKey, garageVehicleLabel, useGarageStore } from '@/store/garageStore';
 
@@ -45,36 +45,6 @@ function formatGenerationLabel(
   const display = code ?? name;
   const range = yearTo !== null ? `${yearFrom}–${yearTo}` : `${yearFrom}–present`;
   return `${display} (${range})`;
-}
-
-/** Non-empty values in first-seen order. */
-function distinct(values: (string | null)[]): string[] {
-  const out: string[] = [];
-  for (const value of values) {
-    if (value && !out.includes(value)) out.push(value);
-  }
-  return out;
-}
-
-/**
- * Trim and engine narrow each other: the trim list only shows trims sold with
- * the chosen engine and vice versa. When exactly one variant is left it is the
- * picked version, which is how a trim with a single engine fills the engine in
- * by itself (and a year with a single variant needs no choice at all).
- */
-function narrowVariants(
-  all: VehicleVariant[],
-  trim: string,
-  engine: string,
-): { trims: string[]; engines: string[]; resolved: VehicleVariant | undefined } {
-  const byTrim = (v: VehicleVariant): boolean => !trim || v.trim === trim;
-  const byEngine = (v: VehicleVariant): boolean => !engine || v.engineCode === engine;
-  const matching = all.filter((v) => byTrim(v) && byEngine(v));
-  return {
-    trims: distinct(all.filter(byEngine).map((v) => v.trim)),
-    engines: distinct(all.filter(byTrim).map((v) => v.engineCode)).sort((a, b) => a.localeCompare(b)),
-    resolved: matching.length === 1 ? matching[0] : undefined,
-  };
 }
 
 function VehiclePickerInner({
