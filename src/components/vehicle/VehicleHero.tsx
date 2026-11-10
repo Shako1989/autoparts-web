@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import { Car, ChevronRight, Home, Layers } from 'lucide-react';
 
 import type { VehicleGeneration, VehicleMake, VehicleModel, VehicleVariant } from '@/api/catalog';
+import heroBackground from '@/assets/hero/vehicle-waves.webp';
 import bodyIcon from '@/assets/specs/body.webp';
 import engineIcon from '@/assets/specs/engine.webp';
 import fuelIcon from '@/assets/specs/fuel.webp';
@@ -25,7 +26,8 @@ interface VehicleHeroProps {
 /**
  * Dark band at the top of the vehicle page: breadcrumbs, make badge, the
  * car's name and version, spec chips for what the catalog knows about the
- * variant, and the car render on the right.
+ * variant, and the car render standing on the lit floor of the wave
+ * backdrop, right-hand side.
  */
 export function VehicleHero({
   make,
@@ -62,22 +64,24 @@ export function VehicleHero({
   }
 
   return (
-    <section className="relative overflow-hidden bg-navy text-white">
+    <section className="relative flex min-h-[300px] flex-col justify-center overflow-hidden bg-navy text-white lg:min-h-[380px]">
       <div
         aria-hidden
-        className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_rgba(37,99,235,0.35),_transparent_55%)]"
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+        style={{ backgroundImage: `url(${heroBackground})` }}
       />
-      <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-navy via-navy/90 to-transparent" />
+      {/* Keeps the text readable on the left; fades out where the ribbons glow. */}
+      <div aria-hidden className="absolute inset-0 bg-gradient-to-r from-navy/80 via-navy/40 to-transparent" />
       {imageUrl && (
         <img
           src={imageUrl}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute -right-6 top-1/2 hidden w-[44%] max-w-[720px] -translate-y-1/2 drop-shadow-[0_30px_40px_rgba(0,0,0,0.6)] lg:block"
+          className="pointer-events-none absolute bottom-0 right-0 hidden h-[92%] w-[46%] max-w-[800px] object-contain object-right-bottom drop-shadow-[0_24px_32px_rgba(0,0,0,0.55)] lg:block"
         />
       )}
 
-      <div className="container relative mx-auto px-4 pb-8 pt-5 lg:pb-10">
+      <div className="container relative mx-auto w-full px-4 py-6 lg:py-8">
         <nav aria-label="Breadcrumb" className="text-sm text-slate-300">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
