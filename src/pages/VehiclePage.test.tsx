@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import type { AxiosResponse } from 'axios';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
@@ -28,6 +28,15 @@ const CD391 = {
   yearFrom: 2013,
   yearTo: 2020,
 };
+const CD338 = {
+  ...CD391,
+  id: 'gen-cd338',
+  code: 'CD338',
+  name: 'Fusion I (CD338)',
+  slug: 'cd338',
+  yearFrom: 2006,
+  yearTo: 2012,
+};
 const S_25 = {
   id: 'var-s-25',
   generationId: 'gen-cd391',
@@ -39,13 +48,52 @@ const S_25 = {
   fuel: 'PETROL',
 };
 const SE_20 = { ...S_25, id: 'var-se-20', trim: 'SE', engineCode: '2.0 EcoBoost' };
+const OIL_FILTERS = {
+  id: 'cat-oil-filters',
+  parentId: 'cat-maintenance',
+  slug: 'oil-filters',
+  name: 'Yağ filtrləri',
+  iconUrl: null,
+  sortOrder: 10,
+  children: [],
+};
+const MAINTENANCE = {
+  id: 'cat-maintenance',
+  parentId: null,
+  slug: 'maintenance',
+  name: 'Texniki xidmət',
+  iconUrl: null,
+  sortOrder: 10,
+  children: [OIL_FILTERS],
+};
+const HVAC = { ...MAINTENANCE, id: 'cat-hvac', slug: 'hvac', name: 'Kondisioner', sortOrder: 110, children: [] };
+const OIL_FILTER = {
+  id: 'part-oil-filter',
+  categorySlug: 'oil-filters',
+  name: 'Yağ filtri',
+  brand: 'Motorcraft',
+  defaultImageUrl: null,
+};
+const WIPER = { ...OIL_FILTER, id: 'part-wiper', categorySlug: 'wiper-blades', name: 'Silgəc' };
+
+const EXACT = 'make=ford&model=fusion&year=2017&variant=var-se-20';
+const MODEL_YEAR = 'make=ford&model=fusion&year=2017';
 
 const ROUTES: Record<string, unknown> = {
   '/v1/catalog/makes': [FORD],
   '/v1/catalog/makes/ford/models': [FUSION],
-  '/v1/catalog/models/model-fusion/generations': [CD391],
+  '/v1/catalog/models/model-fusion/generations': [CD338, CD391],
   '/v1/catalog/variants?model=model-fusion&year=2017': [S_25, SE_20],
-  '/v1/catalog/categories': [],
+  '/v1/catalog/categories': [MAINTENANCE, HVAC],
+  [`/v1/catalog/categories/part-counts?${EXACT}`]: { 'cat-maintenance': 9, 'cat-oil-filters': 9 },
+  [`/v1/catalog/categories/part-counts?${MODEL_YEAR}`]: {},
+  // Newest first from the server; the strip moves the part with offers to the front.
+  [`/v1/catalog/parts?page=0&size=12&${EXACT}`]: { items: [WIPER, OIL_FILTER], page: 0, size: 12, total: 2 },
+  [`/v1/catalog/parts?page=0&size=12&${MODEL_YEAR}`]: { items: [], page: 0, size: 12, total: 0 },
+  '/v1/parts/listings-summary?ids=part-wiper,part-oil-filter': [
+    { partId: 'part-wiper', activeCount: 0, minPriceMinor: null, currency: null },
+    { partId: 'part-oil-filter', activeCount: 2, minPriceMinor: 1850, currency: 'AZN' },
+  ],
 };
 
 function ok(data: unknown): AxiosResponse {
@@ -115,14 +163,57 @@ describe('VehiclePage', () => {
     expect(useGarageStore.getState().activeVariantId).toBe('ford-fusion-gen-2017-var-se-20');
   });
 
-  it('falls back to the model year when the link carries no variant', async () => {
+  it('falls back to the model year, naming the one generation built that year', async () => {
     renderAt('/v/ford/fusion/2017');
 
     await waitFor(() =>
       expect(useGarageStore.getState().activeVariantId).toBe('ford-fusion-gen-2017'),
     );
-    expect(screen.getByText('CD391')).toBeInTheDocument();
+    expect(screen.getByText('CD391 · 2013–2020')).toBeInTheDocument();
+    expect(screen.getAllByText('CD391').length).toBeGreaterThan(0);
     expect(useGarageStore.getState().vehicles[0]?.label).toBe('Ford Fusion CD391 2017');
     expect(useGarageStore.getState().vehicles[0]?.vehicleVariantId).toBeUndefined();
+  });
+
+  it('shows how many parts fit per category and the bundled category photo', async () => {
+    renderAt('/v/ford/fusion/2017?variant=var-se-20');
+
+    const maintenance = await screen.findByRole('link', { name: /Texniki xidmət/ });
+    expect(maintenance).toHaveTextContent('9 hissə');
+    expect(maintenance.querySelector('img')?.getAttribute('src')).toMatch(/maintenance/);
+    expect(screen.getByRole('link', { name: /Kondisioner/ })).toHaveTextContent('Hələ hissə yoxdur');
+
+    fireEvent.click(screen.getByRole('button', { name: 'Bütün kateqoriyalar' }));
+    expect(screen.getByRole('link', { name: /Yağ filtrləri/ })).toHaveTextContent('9');
+  });
+
+  it('lists the parts that fit, offers first, with the lowest price', async () => {
+    renderAt('/v/ford/fusion/2017?variant=var-se-20');
+
+    // The price lands with the second request (listing stats), after the parts.
+    expect(await screen.findByText(/18,50/)).toBeInTheDocument();
+    const oilFilter = screen.getByRole('link', { name: /Yağ filtri/ });
+    const wiper = screen.getByRole('link', { name: /Silgəc/ });
+    expect(wiper).toHaveTextContent('Hələ təklif yoxdur');
+    expect(oilFilter.compareDocumentPosition(wiper) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  });
+
+  it('shows the spec chips of the exact version and the facts in the sidebar', async () => {
+    renderAt('/v/ford/fusion/2017?variant=var-se-20');
+
+    // Once as a hero chip, once as a sidebar row.
+    expect(await screen.findAllByText('Benzin')).toHaveLength(2);
+    expect(screen.getAllByText('Sedan')).toHaveLength(2);
+    expect(screen.getByText('Komplektasiya').nextElementSibling).toHaveTextContent('SE');
+  });
+
+  it('opens the picker from the hint when the link carries no exact version', async () => {
+    renderAt('/v/ford/fusion/2017');
+
+    const hints = await screen.findAllByRole('button', { name: 'Maşını dəyiş' });
+    expect(screen.queryAllByRole('combobox')).toHaveLength(0);
+    fireEvent.click(hints[0]!);
+    expect(screen.getAllByRole('combobox').length).toBeGreaterThan(0);
+    expect(screen.getByText('Bu maşın üçün hələ hissə əlavə olunmayıb.')).toBeInTheDocument();
   });
 });

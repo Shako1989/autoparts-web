@@ -147,6 +147,18 @@ export function usePartListingsSummary(partId: string | undefined) {
   });
 }
 
+/** Active-offer stats for many parts in one request; a part without offers comes back with zero. */
+export function usePartListingsSummaries(partIds: string[]) {
+  const ids = [...new Set(partIds)];
+  return useQuery<PartListingStats[]>({
+    queryKey: ['parts', 'listings', 'summaries', ids],
+    queryFn: async () =>
+      (await apiClient.get<PartListingStats[]>(`/v1/parts/listings-summary?ids=${ids.join(',')}`)).data,
+    enabled: ids.length > 0,
+    staleTime: 30_000,
+  });
+}
+
 export function useMyListings(status?: ListingStatus, page = 0, size = 20) {
   const token = useAuthStore((s) => s.accessToken);
   const params = new URLSearchParams();

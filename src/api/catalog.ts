@@ -74,6 +74,7 @@ export interface PartNumberEntry {
 
 export interface PartListItem {
   id: string;
+  categorySlug: string;
   name: string;
   brand: string | null;
   defaultImageUrl: string | null;
@@ -215,6 +216,16 @@ const KEY = {
     variantId?: string | null,
   ) =>
     ['catalog', 'category', slug, 'parts', page, size, lang,
+     makeSlug ?? null, modelSlug ?? null, year ?? null, variantId ?? null] as const,
+  partCounts: (
+    makeSlug?: string | null, modelSlug?: string | null, year?: number | null, variantId?: string | null,
+  ) =>
+    ['catalog', 'partCounts', makeSlug ?? null, modelSlug ?? null, year ?? null, variantId ?? null] as const,
+  partsForVehicle: (
+    page: number, size: number, lang: string,
+    makeSlug?: string | null, modelSlug?: string | null, year?: number | null, variantId?: string | null,
+  ) =>
+    ['catalog', 'parts', page, size, lang,
      makeSlug ?? null, modelSlug ?? null, year ?? null, variantId ?? null] as const,
   part: (id: string, lang: string) => ['catalog', 'part', id, lang] as const,
   fitments: (partId: string) => ['catalog', 'fitments', partId] as const,
@@ -362,6 +373,57 @@ export function usePartsInCategory(
       return get<PageResponse<PartListItem>>(`/v1/catalog/categories/${slug}/parts?${params}`);
     },
     enabled: !!slug,
+    ...longStale,
+  });
+}
+
+/**
+ * Active parts per category id for a vehicle, rolled up to the roots
+ * (`{ [categoryId]: count }`); categories without parts are absent.
+ */
+export function useCategoryPartCounts(
+  filter: VehicleFilter | undefined,
+  enabled = true,
+): ReturnType<typeof useQuery<Record<string, number>>> {
+  const mk = filter?.makeSlug ?? null;
+  const m = filter?.modelSlug ?? null;
+  const y = filter?.year ?? null;
+  const v = filter?.variantId ?? null;
+  return useQuery({
+    queryKey: KEY.partCounts(mk, m, y, v),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      vehicleFilterParams(filter, params);
+      return get<Record<string, number>>(`/v1/catalog/categories/part-counts?${params}`);
+    },
+    enabled,
+    ...longStale,
+  });
+}
+
+/** Parts that fit the vehicle in any category, newest first. */
+export function usePartsForVehicle(
+  filter: VehicleFilter | undefined,
+  size = 12,
+  enabled = true,
+  page = 0,
+): ReturnType<typeof useQuery<PageResponse<PartListItem>>> {
+  const { i18n } = useTranslation();
+  const lang = i18n.resolvedLanguage ?? 'az';
+  const mk = filter?.makeSlug ?? null;
+  const m = filter?.modelSlug ?? null;
+  const y = filter?.year ?? null;
+  const v = filter?.variantId ?? null;
+  return useQuery({
+    queryKey: KEY.partsForVehicle(page, size, lang, mk, m, y, v),
+    queryFn: () => {
+      const params = new URLSearchParams();
+      params.set('page', String(page));
+      params.set('size', String(size));
+      vehicleFilterParams(filter, params);
+      return get<PageResponse<PartListItem>>(`/v1/catalog/parts?${params}`);
+    },
+    enabled,
     ...longStale,
   });
 }

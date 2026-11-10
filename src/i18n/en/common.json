@@ -130,9 +130,37 @@
     },
     "vehicle": {
       "heading": "{{make}} {{model}} {{year}}",
+      "home": "Home",
       "browseCategories": "Browse categories",
-      "partsHeading": "Parts that fit this car",
-      "partsPlaceholder": "Parts will appear once search is wired up."
+      "viewAllCategories": "View all categories",
+      "hideAllCategories": "Hide",
+      "partCount_one": "{{count}} part",
+      "partCount_other": "{{count}} parts",
+      "noPartsYet": "No parts yet",
+      "popularParts": "Popular parts for {{vehicle}}",
+      "partsEmpty": "No parts have been added for this car yet.",
+      "fromPrice": "from {{price}}",
+      "scrollBack": "Back",
+      "scrollForward": "Forward",
+      "narrowHint": "Pick the trim and engine to see only the parts that fit.",
+      "changeVehicle": "Change vehicle",
+      "info": {
+        "title": "Vehicle information",
+        "make": "Make",
+        "model": "Model",
+        "year": "Year",
+        "generation": "Generation",
+        "trim": "Trim",
+        "engine": "Engine",
+        "fuel": "Fuel",
+        "body": "Body"
+      },
+      "tips": {
+        "title": "How to find the right part?",
+        "oem": "Use the OEM or part number (e.g. 8V0 698 151)",
+        "trim": "Select the correct trim and engine",
+        "compare": "Compare with your existing part"
+      }
     },
     "diagram": {
       "helper": "Click a numbered marker to see the part and its OEM/aftermarket numbers.",

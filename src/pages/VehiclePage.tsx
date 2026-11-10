@@ -1,10 +1,23 @@
-import { useEffect, useMemo, type ReactElement } from 'react';
+import { useEffect, useMemo, useRef, useState, type ReactElement } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Link, useParams, useSearchParams } from 'react-router-dom';
-import { Car } from 'lucide-react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
-import { useCategoryTree, useGenerations, useMakes, useModels, useVariants } from '@/api/catalog';
-import { CategoryIcon } from '@/components/catalog/CategoryIcon';
+import {
+  useCategoryPartCounts,
+  useCategoryTree,
+  useGenerations,
+  useMakes,
+  useModels,
+  useVariants,
+  type VehicleFilter,
+} from '@/api/catalog';
+import { VehiclePicker } from '@/components/catalog/VehiclePicker';
+import { VehicleCategoryGrid } from '@/components/vehicle/VehicleCategoryGrid';
+import { VehicleHero } from '@/components/vehicle/VehicleHero';
+import { VehicleInfoCard } from '@/components/vehicle/VehicleInfoCard';
+import { VehiclePartsStrip } from '@/components/vehicle/VehiclePartsStrip';
+import { vehicleImageUrl } from '@/lib/catalogImages';
+import { vehiclePagePath } from '@/lib/vehiclePath';
 import {
   garageVehicleKey,
   garageVehicleLabel,
@@ -14,6 +27,7 @@ import {
 
 export default function VehiclePage(): ReactElement {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { makeSlug, modelSlug, year } = useParams<{
     makeSlug: string;
     modelSlug: string;
@@ -43,14 +57,36 @@ export default function VehiclePage(): ReactElement {
     () => (variantParam ? (variantsQ.data ?? []).find((v) => v.id === variantParam) : undefined),
     [variantsQ.data, variantParam],
   );
+  // Without a variant the model year still names the generation when only
+  // one was built that year (CD391 for a 2015 Fusion); overlapping years stay open.
   const generation = useMemo(() => {
     const all = generationsQ.data ?? [];
     if (variant) return all.find((g) => g.id === variant.generationId);
-    return all.length === 1 ? all[0] : undefined;
-  }, [generationsQ.data, variant]);
+    const inYear = all.filter((g) => yearNum >= g.yearFrom && (g.yearTo === null || yearNum <= g.yearTo));
+    return inYear.length === 1 ? inYear[0] : undefined;
+  }, [generationsQ.data, variant, yearNum]);
 
   const isLoading = makesQ.isLoading || modelsQ.isLoading;
   const notFound = !isLoading && (!make || !model || Number.isNaN(yearNum));
+  const ready = !isLoading && !!make && !!model && !Number.isNaN(yearNum);
+
+  // The exact variant from the URL narrows the counts and the parts strip;
+  // the model year alone matches any variant of that year.
+  const filter: VehicleFilter = {
+    makeSlug,
+    modelSlug,
+    year: Number.isNaN(yearNum) ? null : yearNum,
+    variantId: variantParam ?? null,
+  };
+  const countsQ = useCategoryPartCounts(filter, ready);
+
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const pickerRef = useRef<HTMLElement>(null);
+  function openPicker(): void {
+    setPickerOpen(true);
+    // Let it render, then bring it into view.
+    requestAnimationFrame(() => pickerRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
+  }
 
   const active = useActiveVehicle();
   const setActive = useGarageStore((s) => s.setActive);
@@ -102,62 +138,67 @@ export default function VehiclePage(): ReactElement {
     setActive,
   ]);
 
-  const version = [generation?.code, variant?.trim, variant?.engineCode]
-    .filter((part) => part !== null && part !== undefined && part !== '')
-    .join(' · ');
+  const carImage = make && model ? vehicleImageUrl(make.slug, model.slug, generation?.code) : undefined;
 
   return (
-    <main className="container mx-auto px-4 py-10">
-      {isLoading && <p className="text-sm text-slate-500">{t('catalog.loading')}</p>}
+    <main className="bg-slate-50">
+      {isLoading && (
+        <p className="container mx-auto px-4 py-10 text-sm text-slate-500">{t('catalog.loading')}</p>
+      )}
 
-      {notFound && <p className="text-sm text-red-700">{t('catalog.empty')}</p>}
+      {notFound && (
+        <p className="container mx-auto px-4 py-10 text-sm text-red-700">{t('catalog.empty')}</p>
+      )}
 
-      {!isLoading && make && model && !Number.isNaN(yearNum) && (
+      {ready && make && model && (
         <>
-          <header className="flex items-center gap-3">
-            <Car className="h-8 w-8 text-slate-700" aria-hidden />
-            <div>
-              <h1 className="text-3xl font-semibold">
-                {t('catalog.vehicle.heading', { make: make.name, model: model.name, year: yearNum })}
-              </h1>
-              {version && <p className="mt-1 text-sm text-slate-600">{version}</p>}
+          <VehicleHero
+            make={make}
+            model={model}
+            year={yearNum}
+            generation={generation}
+            variant={variant}
+            imageUrl={carImage}
+            onChangeVehicle={openPicker}
+          />
+
+          <div className="container mx-auto grid grid-cols-1 gap-8 px-4 py-8 lg:grid-cols-[minmax(0,1fr)_340px] lg:py-10">
+            <div className="min-w-0">
+              {pickerOpen && (
+                <section
+                  ref={pickerRef}
+                  id="change-vehicle"
+                  className="mb-8 scroll-mt-4 rounded-2xl border border-slate-200 bg-white p-4 shadow-card"
+                >
+                  <h2 className="mb-3 text-lg font-bold text-slate-900">{t('catalog.vehicle.changeVehicle')}</h2>
+                  <VehiclePicker
+                    compact
+                    hideVin
+                    presetMakeSlug={make.slug}
+                    onPicked={(picked) => {
+                      setPickerOpen(false);
+                      navigate(vehiclePagePath(picked));
+                    }}
+                  />
+                </section>
+              )}
+
+              <VehicleCategoryGrid tree={treeQ.data ?? []} counts={countsQ.data} loading={treeQ.isLoading} />
+
+              <VehiclePartsStrip filter={filter} vehicleLabel={`${make.name} ${model.name} ${yearNum}`} />
             </div>
-          </header>
 
-          <section className="mt-8">
-            <h2 className="text-lg font-semibold mb-3">{t('catalog.vehicle.browseCategories')}</h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-              {(treeQ.data ?? []).map((c) => (
-                <li key={c.id}>
-                  <Link
-                    to={`/c/${c.slug}`}
-                    className="flex items-start gap-3 rounded-md border border-slate-200 bg-white p-3 hover:border-slate-400"
-                  >
-                    <CategoryIcon
-                      slug={c.slug}
-                      className="h-5 w-5 mt-0.5 flex-none text-slate-500"
-                      aria-hidden
-                    />
-                    <div>
-                      <span className="font-medium">{c.name}</span>
-                      {c.children.length > 0 && (
-                        <span className="block text-xs text-slate-500 mt-1">
-                          {c.children.length} →
-                        </span>
-                      )}
-                    </div>
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </section>
-
-          <section className="mt-10">
-            <h2 className="text-lg font-semibold mb-3">{t('catalog.vehicle.partsHeading')}</h2>
-            <p className="rounded-md border border-dashed border-slate-300 bg-slate-50 p-6 text-sm text-slate-500">
-              {t('catalog.vehicle.partsPlaceholder')}
-            </p>
-          </section>
+            <VehicleInfoCard
+              make={make}
+              model={model}
+              year={yearNum}
+              generation={generation}
+              variant={variant}
+              imageUrl={carImage}
+              pickerOpen={pickerOpen}
+              onTogglePicker={() => (pickerOpen ? setPickerOpen(false) : openPicker())}
+            />
+          </div>
         </>
       )}
     </main>
