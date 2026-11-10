@@ -64,7 +64,7 @@ export function VehicleHero({
   }
 
   return (
-    <section className="relative flex min-h-[270px] flex-col justify-center overflow-hidden bg-navy text-white lg:min-h-[342px]">
+    <section className="relative flex min-h-[238px] flex-col justify-center overflow-hidden bg-navy text-white lg:min-h-[301px]">
       <div
         aria-hidden
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
