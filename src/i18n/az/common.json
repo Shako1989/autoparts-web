@@ -130,9 +130,37 @@
     },
     "vehicle": {
       "heading": "{{make}} {{model}} {{year}}",
+      "home": "Ana səhifə",
       "browseCategories": "Kateqoriyalara bax",
-      "partsHeading": "Bu maşına uyğun hissələr",
-      "partsPlaceholder": "Hissələr axtarış işə salındıqdan sonra göründə olacaq."
+      "viewAllCategories": "Bütün kateqoriyalar",
+      "hideAllCategories": "Gizlət",
+      "partCount_one": "{{count}} hissə",
+      "partCount_other": "{{count}} hissə",
+      "noPartsYet": "Hələ hissə yoxdur",
+      "popularParts": "{{vehicle}} üçün populyar hissələr",
+      "partsEmpty": "Bu maşın üçün hələ hissə əlavə olunmayıb.",
+      "fromPrice": "{{price}}-dan",
+      "scrollBack": "Geri",
+      "scrollForward": "İrəli",
+      "narrowHint": "Yalnız uyğun gələn hissələri görmək üçün komplektasiya və mühərriki seçin.",
+      "changeVehicle": "Maşını dəyiş",
+      "info": {
+        "title": "Avtomobil məlumatı",
+        "make": "Marka",
+        "model": "Model",
+        "year": "İl",
+        "generation": "Nəsil",
+        "trim": "Komplektasiya",
+        "engine": "Mühərrik",
+        "fuel": "Yanacaq",
+        "body": "Kuzov"
+      },
+      "tips": {
+        "title": "Düzgün hissəni necə tapmalı?",
+        "oem": "OEM və ya hissə nömrəsi ilə axtarın (məs. 8V0 698 151)",
+        "trim": "Düzgün komplektasiya və mühərriki seçin",
+        "compare": "Köhnə hissənizlə müqayisə edin"
+      }
     },
     "diagram": {
       "helper": "Hissəni və onun OEM/əvəzedici nömrələrini görmək üçün nömrəli işarəyə klikləyin.",

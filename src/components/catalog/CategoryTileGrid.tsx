@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
 import { useCategoryTree, type CategoryNode } from '@/api/catalog';
-import { CategoryIcon } from '@/components/catalog/CategoryIcon';
+import { CategoryArtwork } from '@/components/catalog/CategoryArtwork';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 
 export function CategoryTileGrid(): ReactElement | null {
@@ -53,13 +53,7 @@ function CategoryTile({ node }: { node: CategoryNode }): ReactElement {
       to={`/c/${node.slug}`}
       className="group flex items-center gap-3 rounded-xl border border-slate-200 bg-white p-3 shadow-card transition-colors hover:border-brand focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand/40"
     >
-      <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-lg bg-slate-100 group-hover:bg-brand-soft">
-        {node.iconUrl ? (
-          <img src={node.iconUrl} alt="" className="h-8 w-8 object-contain" />
-        ) : (
-          <CategoryIcon slug={node.slug} className="h-7 w-7 text-navy group-hover:text-brand" />
-        )}
-      </span>
+      <CategoryArtwork category={node} className="h-14 w-14" />
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold text-slate-900">{node.name}</span>
         {node.children.length > 0 && (
