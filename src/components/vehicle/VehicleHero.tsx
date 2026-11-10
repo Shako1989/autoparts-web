@@ -64,7 +64,7 @@ export function VehicleHero({
   }
 
   return (
-    <section className="relative flex min-h-[238px] flex-col justify-center overflow-hidden bg-navy text-white lg:min-h-[301px]">
+    <section className="relative overflow-hidden bg-navy text-white">
       <div
         aria-hidden
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
@@ -77,11 +77,12 @@ export function VehicleHero({
           src={imageUrl}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute bottom-0 right-0 hidden h-[92%] w-[46%] max-w-[800px] object-contain object-right-bottom drop-shadow-[0_24px_32px_rgba(0,0,0,0.55)] lg:block"
+          className="pointer-events-none absolute bottom-0 right-0 hidden h-full w-[46%] max-w-[800px] object-contain object-right-bottom drop-shadow-[0_24px_32px_rgba(0,0,0,0.55)] lg:block"
         />
       )}
 
-      <div className="container relative mx-auto w-full px-4 py-6 lg:py-8">
+      {/* The band is as tall as its content: breadcrumbs at the top, chips at the bottom. */}
+      <div className="container relative mx-auto w-full px-4 pb-5 pt-4">
         <nav aria-label="Breadcrumb" className="text-sm text-slate-300">
           <ol className="flex flex-wrap items-center gap-1.5">
             <li>
@@ -105,7 +106,7 @@ export function VehicleHero({
         </nav>
 
         <div className="lg:max-w-[56%]">
-          <div className="mt-5 flex items-center gap-4">
+          <div className="mt-4 flex items-center gap-4">
             <span className="flex h-16 w-24 shrink-0 items-center justify-center rounded-xl bg-white/95 p-2 shadow-hero">
               {logo ? (
                 <img src={logo} alt={make.name} className="max-h-full max-w-full object-contain" />
@@ -122,7 +123,7 @@ export function VehicleHero({
           </div>
 
           {chips.length > 0 && (
-            <ul className="mt-5 flex flex-wrap gap-2.5">
+            <ul className="mt-4 flex flex-wrap gap-2.5">
               {chips.map((chip) => (
                 <li
                   key={chip.key}
