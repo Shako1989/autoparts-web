@@ -139,6 +139,7 @@ export default function VehiclePage(): ReactElement {
   ]);
 
   const carImage = make && model ? vehicleImageUrl(make.slug, model.slug, generation?.code) : undefined;
+  const heroImage = make && model ? vehicleImageUrl(make.slug, model.slug, generation?.code, 'xray') : undefined;
 
   return (
     <main className="bg-slate-50">
@@ -158,7 +159,7 @@ export default function VehiclePage(): ReactElement {
             year={yearNum}
             generation={generation}
             variant={variant}
-            imageUrl={carImage}
+            imageUrl={heroImage}
             onChangeVehicle={openPicker}
           />
 

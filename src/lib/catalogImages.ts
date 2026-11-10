@@ -29,15 +29,25 @@ export function makeLogoUrl(slug: string): string | undefined {
   return makeLogos.get(slug);
 }
 
-/** `ford-fusion-cd391.webp` for that generation, else `ford-fusion.webp` for the whole model. */
+/** `photo` is the plain render for the sidebar card; `xray` the cutaway for the hero. */
+export type VehicleImageKind = 'photo' | 'xray';
+
+/**
+ * `ford-fusion-cd391.webp` for that generation, else `ford-fusion.webp` for
+ * the whole model. The `xray` kind looks for the same names with an `-xray`
+ * suffix first and falls back to the photo.
+ */
 export function vehicleImageUrl(
   makeSlug: string,
   modelSlug: string,
   generationCode?: string | null,
+  kind: VehicleImageKind = 'photo',
 ): string | undefined {
   const model = `${makeSlug}-${modelSlug}`;
-  const byGeneration = generationCode
-    ? vehicleImages.get(`${model}-${generationCode.toLowerCase()}`)
-    : undefined;
-  return byGeneration ?? vehicleImages.get(model);
+  const keys = generationCode ? [`${model}-${generationCode.toLowerCase()}`, model] : [model];
+  if (kind === 'xray') {
+    const xray = keys.map((key) => vehicleImages.get(`${key}-xray`)).find(Boolean);
+    if (xray) return xray;
+  }
+  return keys.map((key) => vehicleImages.get(key)).find(Boolean);
 }
